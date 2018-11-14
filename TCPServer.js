@@ -2,8 +2,7 @@
 
 var net = require('net');
 
-var HOST = process.env.HOST||'127.0.0.1';
-var PORT =  process.env.PORT||8000;
+
 
 let buff = null;
 
@@ -67,105 +66,10 @@ BRAND="TIKTAK"
 
 
 
-// const kue = require('kue')
-// const jobs = kue.createQueue()
 
 
 
-// function newJob(){
-//     var job = jobs.create('new_job')
-//     job.save()
-// }
 
-// jobs.process('new_job' , function(job , done){
-    
-//     console.log('Job' , job.id, 'is done')
-//     done && done()
-// })
-
-
-// setInterval(newJob , 3000)
-
-
-
-net.createServer(function(sock) {
-
-        sock.on('data', function(data) {
-    
-            buff = Buffer.from(data);
-    
-    
-            if(data)
-            {
-                //Regex
-                
-                if(buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENU_F02"/>'))
-                {
-    
-                        
-                        sock.write(token) ;                    
-                        sock.write(Buffer.from('ff', 'hex'));
-                        //sock.destroy();
-    
-                        sock.on("data", pduReply => {
-                                console.log("================");
-                        
-                                let hasWritten =sock.write(msgPDU);
-                                let hasSendPDU = sock.write(Buffer.from('ff', 'hex'));
-                                
-                                
-                                if(hasWritten)
-                                {
-                                    console.log("Check PDU message sending================33");
-    
-                                    // sock.write(msgPDU);
-                                    console.log(pduReply.toString());
-                                    sock.write(numberReply);
-                                    sock.write(Buffer.from('ff', 'hex'));
-    
-                                  
-    
-                                            // sock.on("data", d5 =>{
-    
-                                            //     console.log(d5);
-                                            // });
-    
-                                            
-                                  
-                                  
-                                    
-                                    
-    
-                                    sock.pause();
-    
-                                }
-    
-                                
-                                
-    
-                             
-    
-                     })
-                        
-    
-    
-    
-    
-               
-                      
-                       
-                }
-    
-            }  
-            sock.setKeepAlive(true)
-    
-           
-            
-        })
-    
-    }).listen(PORT,HOST)
-    
-    console.log("Server listening on "+HOST+":"+PORT);
 
  
 
@@ -190,4 +94,157 @@ net.createServer(function(sock) {
 // }
 
 
+import express from 'express'
 
+//set up the express app 
+const app = express()
+
+//Server Endpoint
+
+app.get('/api/v1/option1' , (req , res) => {
+    var HOST = process.env.HOST||'127.0.0.1';
+    var PORT =  process.env.PORT||8000;
+
+    var socket = net.createConnection(PORT , HOST)
+    console.log('Socket created.')
+
+    socket.on( 'data' , function(data) {
+        //check if we are receiving any data
+        console.log('RESPONSE:' + data)
+        //stream data into the buffer
+        buff = Buffer.from(data)
+        //check if there is data into the pipe 
+        if(data){
+            // search for the login request in the buffer
+            if(buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENU_FO2"/>')){
+                socket.write(token)
+                socket.write(Buffer.from('ff' , 'hex'))
+
+
+            }
+
+        }
+
+
+    }).on('connect' , function(){
+        socket.on('data' ,pduReply => {
+            console.log("Sending PSSSR")
+            let hasWritten = socket.write(msgPDU)
+            socket.write(Buffer.from('ff' , 'hex'))
+
+            //checking the pipeline
+            if(hasWritten){
+
+                console.log("Checking PDU message sending")
+
+
+                //writing action request in the pipe
+                console.log(pduReply.toString())
+                socket.write(numberReply)
+                socket.write(Buffer.from('ff' , 'hex'))
+                socket.on("data" , gateWayResponse => {
+                    console.log(gateWayResponse)
+                })
+            }
+        })
+
+    })
+
+
+
+
+
+
+    res.status(200).send({
+        success: 'true',
+        message: 'Option1 being executed'
+
+    })
+})
+
+const portExpress = 5000
+
+app.listen(portExpress , () => {
+    console.log(`server running on port ${portExpress}`)
+})
+
+
+
+// net.createServer(function(sock) {
+
+//     sock.on('data', function(data) {
+
+//         buff = Buffer.from(data);
+
+
+//         if(data)
+//         {
+//             //Regex
+            
+//             if(buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENU_F02"/>'))
+//             {
+
+                    
+//                     sock.write(token) ;                    
+//                     sock.write(Buffer.from('ff', 'hex'));
+//                     //sock.destroy();
+
+//                     sock.on("data", pduReply => {
+//                             console.log("================");
+                    
+//                             let hasWritten =sock.write(msgPDU);
+//                             let hasSendPDU = sock.write(Buffer.from('ff', 'hex'));
+                            
+                            
+//                             if(hasWritten)
+//                             {
+//                                 console.log("Check PDU message sending================33");
+
+//                                 // sock.write(msgPDU);
+//                                 console.log(pduReply.toString());
+//                                 sock.write(numberReply);
+//                                 sock.write(Buffer.from('ff', 'hex'));
+
+                              
+
+//                                         // sock.on("data", d5 =>{
+
+//                                         //     console.log(d5);
+//                                         // });
+
+                                        
+                              
+                              
+                                
+                                
+
+//                                 sock.pause();
+
+//                             }
+
+                            
+                            
+
+                         
+
+//                  })
+                    
+
+
+
+
+           
+                  
+                   
+//             }
+
+//         }  
+//         sock.setKeepAlive(true)
+
+       
+        
+//     })
+
+// }).listen(PORT,HOST)
+
+// console.log("Server listening on "+HOST+":"+PORT);
