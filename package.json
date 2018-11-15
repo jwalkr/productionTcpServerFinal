@@ -13,6 +13,7 @@
     "babel-cli": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "express": "^4.16.4",
-    "kue": "^0.11.6"
+    "kue": "^0.11.6",
+    "kue-ui-express": "^1.1.1"
   }
 }
