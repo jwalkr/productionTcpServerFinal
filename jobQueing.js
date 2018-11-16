@@ -78,7 +78,7 @@ queue.process('UserRequest', 10 ,function(job , done ){
     const host = process.env.HOST||'127.0.0.1'
     const port = process.env.PORT||8000;
 
-    const socket = net.createConnecton(port , host)
+    const socket = net.createConnection(port , host)
     console.log('socket created')
     socket.on('data' , function(data){
         //check if we are receiving any data 
