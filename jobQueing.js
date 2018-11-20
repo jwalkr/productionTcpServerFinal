@@ -47,18 +47,20 @@ app.post('/api/v1/addJob' , (req,res)=>{
             success: 'false', 
             message: 'The USSRC Reply is missing'
         })
-    }else if (!req.body.numberReply){
-        return res.status(400).send({
-            success: 'false',
-            message: 'The action USSRC is required'
-        })
     }
+    // else if (!req.body.numberReply){
+    //     return res.status(400).send({
+    //         success: 'false',
+    //         message: 'The action USSRC is required'
+    //     })
+    // }
 
-    queue.create('UserRequest', {
+    const userRequestJob = queue.create('UserRequest', {
         msgPDU : req.body.msgPDU,
         contentReply: req.body.contentReply,
         numberReply: req.body.numberReply
-    }).priority(-15).attempts(3).removeOnComplete(true).save(err => {
+    })
+    .priority(-15).attempts(3).removeOnComplete(true).save(err => {
         if(err){
             console.error(err)
             done()
@@ -93,10 +95,11 @@ queue.process('UserRequest', 10 ,function(job , done ){
                 socket.write(Buffer.from('ff' , 'hex'))
             }
         }
-    }).on('connect' , function(){
+    })
+    .on('connect' , function(){
         socket.on('data' , pduReply => {
             console.log('Sending PSSSR')
-            let hasWritten = socket.write(msgPDU)
+            let hasWritten = socket.write(job.data.msgPDU)
             socket.write(Buffer.from('ff' , 'hex'))
 
             if(hasWritten){
@@ -105,21 +108,41 @@ queue.process('UserRequest', 10 ,function(job , done ){
                 //writing action request in the pipe 
                 console.log(pduReply.toString())
 
-                socket.write(numberReply)
+                socket.write(job.data.contentReply)
                 socket.write(Buffer.from('ff' , 'hex'))
 
-                socket.on('data' , gateWayResponse => {
-                    console.log(gateWayResponse)
-                })
+                if(job.data.numberReply != ''){
+                    socket.on('data' , gateWayResponse => {
+                        console.log(gateWayResponse.toString())
+                        socket.write(job.data.numberReply)
+                        socket.write(Buffer.from('ff' , 'hex'))
+                    })
+
+                }
+
+               
                 socket.pause()
                 socket.end()
 
             }
         })
-    }).on('end' , function(){
-        console.log('The Request has been Proccessed')
-        done()
     })
+    .on('end' , function(){
+        console.log('The Request has been Proccessed')
+       done && done()
+    })
+    .on('error' , (error)=>{
+        console.log('Handled error')
+        console.log(error)
+        userRequestJob.on('failed' , (errorMessage)=>{
+            console.log(error)
+            let jobError = JSON.parse(errorMessage)
+            console.log(errorMessage)
+        })
+
+
+    })
+
 
 })
 
