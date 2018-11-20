@@ -31,6 +31,7 @@ app.use(bodyParse.urlencoded({extended: false}))
 let buff = null 
 let buffRespond = null 
 const token = '<?xml version="1.0" encoding="ISO-8859-1"?> <cookie VALUE="UXCKB1TAIS7XT6"/>'
+const userRequestJob = null 
 
 
 //Add a job
@@ -55,7 +56,7 @@ app.post('/api/v1/addJob' , (req,res)=>{
     //     })
     // }
 
-    const userRequestJob = queue.create('UserRequest', {
+    userRequestJob = queue.create('UserRequest', {
         msgPDU : req.body.msgPDU,
         contentReply: req.body.contentReply,
         numberReply: req.body.numberReply
