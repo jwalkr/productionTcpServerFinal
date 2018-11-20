@@ -58,15 +58,7 @@ app.post('/api/v1/addJob' , (req,res)=>{
         msgPDU : req.body.msgPDU,
         contentReply: req.body.contentReply,
         numberReply: req.body.numberReply
-    }).priority(-15).attempts(3).removeOnComplete(true).save(err => {
-        if(err){
-            console.error(err)
-            done()
-        }
-        if(!err){
-            done()
-        }
-    })
+    }).priority(-15).attempts(3).removeOnComplete(true).save()
 
 
 })
@@ -78,7 +70,7 @@ queue.process('UserRequest', 10 ,function(job , done ){
     const host = process.env.HOST||'127.0.0.1'
     const port = process.env.PORT||8000;
 
-    const socket = net.createConnecton(port , host)
+    const socket = net.createConnection(port , host)
     console.log('socket created')
     socket.on('data' , function(data){
         //check if we are receiving any data 
