@@ -31,7 +31,7 @@ app.use(bodyParse.urlencoded({extended: false}))
 let buff = null 
 let buffRespond = null 
 const token = '<?xml version="1.0" encoding="ISO-8859-1"?> <cookie VALUE="UXCKB1TAIS7XT6"/>'
-const userRequestJob = null 
+let userRequestJob = null
 
 
 //Add a job
