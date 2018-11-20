@@ -61,15 +61,7 @@ app.post('/api/v1/addJob' , (req,res)=>{
         contentReply: req.body.contentReply,
         numberReply: req.body.numberReply
     })
-    .priority(-15).attempts(3).removeOnComplete(true).save(err => {
-        if(err){
-            console.error(err)
-            done()
-        }
-        if(!err){
-            done()
-        }
-    })
+    .priority(-15).attempts(3).removeOnComplete(true).save()
 
 
 })
