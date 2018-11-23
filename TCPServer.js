@@ -1,6 +1,7 @@
 // 'use strict'
 
 var net = require('net');
+var express = require('express')
 
 
 
@@ -34,92 +35,10 @@ const server = net.createServer((socket) => {
 
 
 })
-// const msgPDU = `<?xml version="1.0" encoding="ISO-8859-1"?>
-// <ussd
-// PDU="PSSRR"
-// MSISDN="27788425401"
-// STRING="*121#"
-// TID="1034"
-// REQID="0"
-// TARIFF="*">
-// <attributes
-// IMSI=
-// "655101234567890"
-// SUBTYPE="P"
-// BRAND="TIKTAK"
-// />
-// <cookie/>
-// </ussd>`
-
-//  const contentReply = `<?xml version="1.0" encoding="ISO-8859-1"?>
-//  <ussd
-//  PDU="USSRC"
-//  MSISDN="27788425401"
-//  STRING="0"
-//  TID="1034"
-//  REQID="0"
-//  TARIFF="*">
-//  <attributes
-//  IMSI=
-//  "655101234567890"
-//  SUBTYPE="P"
-//  BRAND="TIKTAK"
-//  />
-//  <cookie/>
-//  </ussd>` 
-
-//  const numberReply = `<?xml version="1.0" encoding="ISO-8859-1"?>
-//  <ussd
-//  PDU="USSRC"
-//  MSISDN="27788425401"
-//  STRING="27788425401"
-//  TID="1034"
-//  REQID="0"
-//  TARIFF="*">
-//  <attributes
-//  IMSI=
-//  "655101234567890"
-//  SUBTYPE="P"
-//  BRAND="TIKTAK"
-//  />
-//  <cookie/>
-//  </ussd>` 
 
 
 
 
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-// //receive the socket and the message PDU *121#
-// function sendMessagePDU(sock,msgPDU){
-
-//     sock.on("data", info => {
-//             console.log("Debug================Debug");
-//             sock.write(msgPDU);
-//             sock.write(Buffer.from('ff', 'hex'));
-
-//     });
-
-//     sock.end();
-
-// }
-
-
-import express from 'express'
 
 //set up the express app 
 const app = express()
