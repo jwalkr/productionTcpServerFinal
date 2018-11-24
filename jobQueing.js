@@ -7,43 +7,8 @@ const bodyParse =require('body-parser')
 const app = express()
 const PORT = 5000
 
-//server connection
-
-const host = process.env.HOST||'127.0.0.1'
-const port = process.env.PORT||8000;
-
-//tcp variables
-let buff = null 
-let buffRespond = null 
-const token = '<?xml version="1.0" encoding="ISO-8859-1"?> <cookie VALUE="UXCKB1TAIS7XT6"/>'
-let userRequestJob = null
 
 
-
-const server = net.createServer((socket) => {
-    socket.on('data' , (loginToken) => {
-        // check if we receiving wasp credentials 
-        console.log('Response:' +  loginToken)
-        //stream data into the buffer 
-        buff = Buffer.from(loginToken)
-        // check if there is data in the pipe
-        if(loginToken){
-            //search for the login request in the buffer
-            if(buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')){
-                socket.write(loginToken)
-                socket.write(Buffer.from('ff' , 'hex'))
-            }
-        }
-    })
-    .on('connect' , (connectionConfirmation) =>{
-        console.log('Connected and ready to receive jobs')
-        console.log(connectionConfirmation.toString())
-    })
-
-
-})
-
-server.listen(8000 , '127.0.0.1')
 
 
 // socket.on('data' , (serverResponse) => {
@@ -115,6 +80,45 @@ app.post('/api/v1/addJob' , (req,res)=>{
 
 })
 
+//server connection
+
+const host = process.env.HOST||'127.0.0.1'
+const port = process.env.PORT||8000;
+
+//tcp variables
+let buff = null 
+let buffRespond = null 
+const token = '<?xml version="1.0" encoding="ISO-8859-1"?> <cookie VALUE="UXCKB1TAIS7XT6"/>'
+let userRequestJob = null
+
+
+
+
+
+const server = net.createServer((socket) => {
+    socket.on('data' , (loginToken) => {
+        // check if we receiving wasp credentials 
+        console.log('Response:' +  loginToken)
+        //stream data into the buffer 
+        buff = Buffer.from(loginToken)
+        // check if there is data in the pipe
+        if(loginToken){
+            //search for the login request in the buffer
+            if(buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')){
+                socket.write(token)
+                socket.write(Buffer.from('ff' , 'hex'))
+            }
+        }
+    })
+    .on('connect' , (connectionConfirmation) =>{
+        console.log('Connected and ready to receive jobs')
+        console.log(connectionConfirmation.toString())
+    })
+
+
+})
+
+server.listen(8000 , '127.0.0.1')
 
 
 queue.process('UserRequest', 10 ,function(job , done ){
