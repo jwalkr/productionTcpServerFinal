@@ -109,65 +109,73 @@ const server = net.createServer((socket) => {
                 socket.write(Buffer.from('ff' , 'hex'))
             }
         }
+        console.log('socket created')
     })
-    .on('connect' , (connectionConfirmation) =>{
-        console.log('Connected and ready to receive jobs')
-        console.log(connectionConfirmation.toString())
+
+    queue.process('UserRequest', 10 ,function(job , done ){
+
+    
+        
+        console.log('Sending PSSSR')
+        socket.write(job.data.msgPDU)
+        socket.write(Buffer.from('ff' , 'hex')) 
+        
+        socket.on('data' ,(pduReply) => {
+            socket.write(job.data.contentReply)
+            socket.write(Buffer.from('ff' , 'hex'))
+            if(job.data.numberReply != ''){
+                socket.on('data' , gateWayResponse => {
+                    console.log(gateWayResponse.toString())
+                    socket.write(job.data.numberReply)
+                    socket.write(Buffer.from('ff' , 'hex'))
+                })
+    
+            }
+            console.log('The job has been completed')
+            console.log('The Request has been Proccessed')
+            done && done()
+            socket.pause()
+    
+    
+        })
+        .on('error' , (error)=>{
+            console.log('Handled error')
+            console.log(error)
+            userRequestJob.on('failed' , (errorMessage)=>{
+                console.log(error)
+                let jobError = JSON.parse(errorMessage)
+                console.log(errorMessage)
+            })
+    
+    
+        })
+        
+       
+        // .on('end' , function(){
+        //     console.log('The Request has been Proccessed')
+        //    done && done()
+        // })
+    
+    
+        
+    
+        
+    
     })
+    
+    
+
+
+    // .on('connect' , (connectionConfirmation) =>{
+    //     console.log('Connected and ready to receive jobs')
+    //     console.log(connectionConfirmation.toString())
+    // })
 
 
 })
 
 server.listen(8000 , '127.0.0.1')
 
-
-queue.process('UserRequest', 10 ,function(job , done ){
-
-    
-    console.log('socket created')
-    console.log('Sending PSSSR')
-    server.write(job.data.msgPDU)
-    server.write(Buffer.from('ff' , 'hex')) 
-    
-    server.on('data' ,(pduReply) => {
-        server.write(job.data.contentReply)
-        server.write(Buffer.from('ff' , 'hex'))
-        if(job.data.numberReply != ''){
-            socket.on('data' , gateWayResponse => {
-                console.log(gateWayResponse.toString())
-                socket.write(job.data.numberReply)
-                socket.write(Buffer.from('ff' , 'hex'))
-            })
-
-        }
-        console.log('The job has been completed')
-       
-        socket.pause()
-
-
-    })
-    .on('end' , function(){
-        console.log('The Request has been Proccessed')
-       done && done()
-    })
-    .on('error' , (error)=>{
-        console.log('Handled error')
-        console.log(error)
-        userRequestJob.on('failed' , (errorMessage)=>{
-            console.log(error)
-            let jobError = JSON.parse(errorMessage)
-            console.log(errorMessage)
-        })
-
-
-    })
-
-
-    
-
-    
-
-})
 
 
 
