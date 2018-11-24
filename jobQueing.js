@@ -51,18 +51,18 @@ app.use(bodyParse.urlencoded({extended: false}))
 //Add a job
 
 app.post('/api/v1/addJob' , (req,res)=>{
-    if(!req.body.msgPDU){
-        return res.status(400).send({
-            success: 'false',
-            message: 'The USSRC is required'
-        })
+    // if(!req.body.msgPDU){
+    //     return res.status(400).send({
+    //         success: 'false',
+    //         message: 'The USSRC is required'
+    //     })
 
-    }else if(!req.body.contentReply){
-        return res.status(400).send({
-            success: 'false', 
-            message: 'The USSRC Reply is missing'
-        })
-    }
+    // }else if(!req.body.contentReply){
+    //     return res.status(400).send({
+    //         success: 'false', 
+    //         message: 'The USSRC Reply is missing'
+    //     })
+    // }
     // else if (!req.body.numberReply){
     //     return res.status(400).send({
     //         success: 'false',
