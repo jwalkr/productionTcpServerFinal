@@ -163,6 +163,7 @@ const server = net.createServer((socket) => {
     
     })
     
+    socket.setKeepAlive(true,30000)
     
 
 
