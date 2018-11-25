@@ -2,6 +2,15 @@
 
 var net = require('net');
 var express = require('express')
+//set up the express app 
+const app = express()
+
+//Server Endpoint
+const portExpress = 5000
+    
+app.listen(portExpress , () => {
+    console.log(`server running on port ${portExpress}`)
+})
 
 
 
@@ -28,44 +37,39 @@ const server = net.createServer((socket) => {
             }
         }
     })
-    .on('connect' , (connectionConfirmation) =>{
-        console.log('Connected and ready to receive jobs')
-        console.log(connectionConfirmation.toString())
-    })
+    // .on('connect' , (connectionConfirmation) =>{
+    //     console.log('Connected and ready to receive jobs')
+    //     console.log(connectionConfirmation.toString())
+    // })
 
-
-})
-
-
-
-
-
-//set up the express app 
-const app = express()
-
-//Server Endpoint
-
-app.get('/api/v1/option1' , (req , res) => {
+    app.get('/api/v1/option1' , (req , res) => {
    
-    console.log('Socket created.')
-
-   
-
-
-
-
-    res.status(200).send({
-        success: 'true',
-        message: 'Option1 being executed'
-
+        console.log('Socket created.')
+        socket.write(req.body)
+        socket.write(Buffer.from('ff' , 'hex'))
+    
+       
+    
+    
+    
+    
+        res.status(200).send({
+            success: 'true',
+            message: 'Option1 being executed'
+    
+        })
     })
+    
+    
 })
 
-const portExpress = 5000
 
-app.listen(portExpress , () => {
-    console.log(`server running on port ${portExpress}`)
-})
+
+
+
+
+
+
 
 
 
