@@ -115,7 +115,7 @@ const server = net.createServer((socket) => {
     queue.process('UserRequest', 10 ,function(job , done ){
 
     
-        
+        socket.resume()    
         console.log('Sending PSSSR')
         socket.write(job.data.msgPDU)
         socket.write(Buffer.from('ff' , 'hex')) 

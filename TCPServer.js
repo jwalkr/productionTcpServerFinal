@@ -23,6 +23,8 @@ var HOST = process.env.HOST||'127.0.0.1';
 var PORT =  process.env.PORT||8000;
 
 const server = net.createServer((socket) => {
+
+    //wasp authentication
     socket.on('data' , (loginToken) => {
         // check if we receiving wasp credentials 
         console.log('Response:' +  loginToken)
