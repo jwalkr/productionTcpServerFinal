@@ -6,7 +6,7 @@ var express = require('express')
 const app = express()
 
 //Server Endpoint
-const portExpress = 5000
+const portExpress = 4200
     
 app.listen(portExpress , () => {
     console.log(`server running on port ${portExpress}`)
@@ -49,17 +49,32 @@ const server = net.createServer((socket) => {
         console.log('Socket created.')
         socket.write(req.body)
         socket.write(Buffer.from('ff' , 'hex'))
-    
+        
+        sock.on("data", serverData =>{
+
+            let dataRespond = Buffer.from(serverData);
+
+            if(Buffer.isBuffer(dataRespond))
+            {
+                console.log("Data Writtenk");
+                console.log(dataRespond.toString());
+
+                res.status(200).send({
+                    success: 'true',
+                    message: 'Option1 being executed'
+            
+                })
+
+
+
+            }
+        })
        
     
     
     
     
-        res.status(200).send({
-            success: 'true',
-            message: 'Option1 being executed'
-    
-        })
+        
     })
     
     
