@@ -1,9 +1,13 @@
 // 'use strict'
 
 var net = require('net');
+var bodyParser = require('body-parser');
+
 var express = require('express')
 //set up the express app 
-const app = express()
+const app = express();
+
+app.use(bodyParser.json());
 
 //Server Endpoint
 const portExpress = 4200
@@ -17,6 +21,9 @@ app.listen(portExpress , () => {
 let buff = null;
 
 let buffRespond = null;
+
+//translate
+const js2xmlparser = require("js2xmlparser");
 
 const token = '<?xml version="1.0" encoding="ISO-8859-1"?> <cookie VALUE="UXCKB1TAIS7XT6"/>';
 var HOST = process.env.HOST||'127.0.0.1';
@@ -34,40 +41,53 @@ const server = net.createServer((socket) => {
         if(loginToken){
             //search for the login request in the buffer
             if(buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')){
-                socket.write(loginToken)
+                socket.write(token)
                 socket.write(Buffer.from('ff' , 'hex'))
             }
         }
+        console.log('socket created')
     })
     // .on('connect' , (connectionConfirmation) =>{
     //     console.log('Connected and ready to receive jobs')
     //     console.log(connectionConfirmation.toString())
     // })
 
-    app.get('/api/v1/option1' , (req , res) => {
+    app.post('/api/v1/option1' , (req, res) => {
    
-        console.log('Socket created.')
-        socket.write(req.body)
+        console.log('Socket created.');
+
+      
+        console.log(req.body);
+
+        let msg = js2xmlparser.parse("ussd",req.body);
+        console.log(msg);
+        socket.write(msg)
         socket.write(Buffer.from('ff' , 'hex'))
         
-        sock.on("data", serverData =>{
+        socket.on("data", serverData =>{
 
             let dataRespond = Buffer.from(serverData);
 
-            if(Buffer.isBuffer(dataRespond))
-            {
-                console.log("Data Writtenk");
+           
+
+            
+
+                console.log("Data Written");
                 console.log(dataRespond.toString());
 
                 res.status(200).send({
                     success: 'true',
-                    message: 'Option1 being executed'
+                    message: 'Option1 being executed',
+                    body: dataRespond.toString()
             
                 })
 
+            
+                
 
 
-            }
+
+            
         })
        
     
@@ -79,6 +99,9 @@ const server = net.createServer((socket) => {
     
     
 })
+
+server.listen(8000 , '127.0.0.1')
+
 
 
 
