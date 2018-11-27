@@ -57,11 +57,15 @@ const server = net.createServer((socket) => {
         console.log('Socket created.');
 
         let dataRespond;
+        console.log('translator body')
         console.log(req.body);
 
-        let msg = js2xmlparser.parse("ussd",req.body);
-        console.log(msg);
-        socket.write(msg)
+        
+
+        // let msg = js2xmlparser.parse("ussd",req.body);
+        // console.log(msg);
+        
+        socket.write(req.body.msgPDU)
         socket.write(Buffer.from('ff' , 'hex'))
         
         socket.on("data", serverData =>{
@@ -92,7 +96,7 @@ const server = net.createServer((socket) => {
 
         socket.on("end", function(){
 
-                console.log(dataRespond);
+                console.log(dataRespond.toString());
 
         })
        
