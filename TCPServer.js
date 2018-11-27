@@ -56,6 +56,8 @@ const server = net.createServer((socket) => {
    
         console.log('Socket created.')
 
+
+        let dataRespond;
         console.log(req.body);
 
         let msg = js2xmlparser.parse("ussd",req.body);
@@ -63,27 +65,12 @@ const server = net.createServer((socket) => {
         // socket.write(msg)
         // socket.write(Buffer.from('ff' , 'hex'))
 
-        socket.on("end", function(){
-
-            let msgPDU = `<?xml version="1.0"
-            encoding="ISO-8859-1"?> <ussd PDU="PSSRR"
-             MSISDN="27788425401" STRING="*121#" TID="1034"
-             REQID="0" TARIFF="*"> <attributes IMSI= "655101234567890"
-            SUBTYPE="P"
-             BRAND="TIKTAK" />
-             <cookie/> </ussd>`
-
-            socket.write(msmsgPDUg);
-            socket.write(Buffer.from('ff' , 'hex'));
-
-        })
-
-
 
         
         // socket.on("data", serverData =>{
 
         //     let dataRespond = Buffer.from(serverData);
+             dataRespond = Buffer.from(serverData);
 
            
 
@@ -98,6 +85,15 @@ const server = net.createServer((socket) => {
         //         //     body: dataRespond.toString()
             
         //         // })
+                // console.log("Data Written");
+                // console.log(dataRespond.toString());
+
+                // res.status(200).send({
+                //     success: 'true',
+                //     message: 'Option1 being executed',
+                //     body: dataRespond.toString()
+            
+                // })
 
             
                 
@@ -105,7 +101,15 @@ const server = net.createServer((socket) => {
 
 
             
+
         // })
+        })
+
+        socket.on("end", function(){
+
+                console.log(dataRespond);
+
+        })
        
     
     
