@@ -54,12 +54,12 @@ const server = net.createServer((socket) => {
 
     app.post('/api/v1/option1' , (req, res) => {
    
-        console.log('Socket created.');
-
-        let dataRespond;
         console.log('translator body')
         console.log(req.body);
 
+
+        let dataRespond;
+       
         
 
         // let msg = js2xmlparser.parse("ussd",req.body);
