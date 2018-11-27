@@ -103,7 +103,7 @@ const server = net.createServer((socket) => {
 
             
         })
-
+        socket.pause()
         // socket.on("end", function(){
 
         //         console.log(dataRespond.toString());
