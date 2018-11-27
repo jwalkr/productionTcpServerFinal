@@ -69,11 +69,11 @@ const server = net.createServer((socket) => {
        
         
 
-        let msg = js2xmlparser.parse("ussd",req.body);
+        let msg = js2xmlparser.parse("xml",req.body);
         console.log('parsed message')
         console.log(msg);
         
-        socket.write(msgPdu)
+        socket.write(msg)
         socket.write(Buffer.from('ff' , 'hex'))
         
         socket.on("data", serverData =>{
