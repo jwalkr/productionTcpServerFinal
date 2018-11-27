@@ -54,37 +54,24 @@ const server = net.createServer((socket) => {
 
     app.post('/api/v1/option1' , (req, res) => {
    
-        console.log('Socket created.')
-
+        console.log('Socket created.');
 
         let dataRespond;
         console.log(req.body);
 
         let msg = js2xmlparser.parse("ussd",req.body);
         console.log(msg);
-        // socket.write(msg)
-        // socket.write(Buffer.from('ff' , 'hex'))
-
-
+        socket.write(msg)
+        socket.write(Buffer.from('ff' , 'hex'))
         
-        // socket.on("data", serverData =>{
+        socket.on("data", serverData =>{
 
-        //     let dataRespond = Buffer.from(serverData);
              dataRespond = Buffer.from(serverData);
 
            
 
             
 
-        //         // console.log("Data Written");
-        //         // console.log(dataRespond.toString());
-
-        //         // res.status(200).send({
-        //         //     success: 'true',
-        //         //     message: 'Option1 being executed',
-        //         //     body: dataRespond.toString()
-            
-        //         // })
                 // console.log("Data Written");
                 // console.log(dataRespond.toString());
 
@@ -101,8 +88,6 @@ const server = net.createServer((socket) => {
 
 
             
-
-        // })
         })
 
         socket.on("end", function(){
