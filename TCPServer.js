@@ -56,7 +56,7 @@ const server = net.createServer((socket) => {
    
         console.log('Socket created.');
 
-      
+        let dataRespond;
         console.log(req.body);
 
         let msg = js2xmlparser.parse("ussd",req.body);
@@ -66,21 +66,21 @@ const server = net.createServer((socket) => {
         
         socket.on("data", serverData =>{
 
-            let dataRespond = Buffer.from(serverData);
+             dataRespond = Buffer.from(serverData);
 
            
 
             
 
-                console.log("Data Written");
-                console.log(dataRespond.toString());
+                // console.log("Data Written");
+                // console.log(dataRespond.toString());
 
-                res.status(200).send({
-                    success: 'true',
-                    message: 'Option1 being executed',
-                    body: dataRespond.toString()
+                // res.status(200).send({
+                //     success: 'true',
+                //     message: 'Option1 being executed',
+                //     body: dataRespond.toString()
             
-                })
+                // })
 
             
                 
@@ -88,6 +88,12 @@ const server = net.createServer((socket) => {
 
 
             
+        })
+
+        socket.on("end", function(){
+
+                console.log(dataRespond);
+
         })
        
     
