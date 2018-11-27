@@ -54,33 +54,50 @@ const server = net.createServer((socket) => {
 
     app.post('/api/v1/option1' , (req, res) => {
    
-        console.log('Socket created.');
+        console.log('Socket created.')
 
-      
         console.log(req.body);
 
         let msg = js2xmlparser.parse("ussd",req.body);
         console.log(msg);
-        socket.write(msg)
-        socket.write(Buffer.from('ff' , 'hex'))
-        
-        socket.on("data", serverData =>{
+        // socket.write(msg)
+        // socket.write(Buffer.from('ff' , 'hex'))
 
-            let dataRespond = Buffer.from(serverData);
+        socket.on("end", function(){
+
+            let msgPDU = `<?xml version="1.0"
+            encoding="ISO-8859-1"?> <ussd PDU="PSSRR"
+             MSISDN="27788425401" STRING="*121#" TID="1034"
+             REQID="0" TARIFF="*"> <attributes IMSI= "655101234567890"
+            SUBTYPE="P"
+             BRAND="TIKTAK" />
+             <cookie/> </ussd>`
+
+            socket.write(msmsgPDUg);
+            socket.write(Buffer.from('ff' , 'hex'));
+
+        })
+
+
+
+        
+        // socket.on("data", serverData =>{
+
+        //     let dataRespond = Buffer.from(serverData);
 
            
 
             
 
-                console.log("Data Written");
-                console.log(dataRespond.toString());
+        //         // console.log("Data Written");
+        //         // console.log(dataRespond.toString());
 
-                res.status(200).send({
-                    success: 'true',
-                    message: 'Option1 being executed',
-                    body: dataRespond.toString()
+        //         // res.status(200).send({
+        //         //     success: 'true',
+        //         //     message: 'Option1 being executed',
+        //         //     body: dataRespond.toString()
             
-                })
+        //         // })
 
             
                 
@@ -88,7 +105,7 @@ const server = net.createServer((socket) => {
 
 
             
-        })
+        // })
        
     
     
