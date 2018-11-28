@@ -29,6 +29,8 @@ const token = '<?xml version="1.0" encoding="ISO-8859-1"?> <cookie VALUE="UXCKB1
 var HOST = process.env.HOST||'127.0.0.1';
 var PORT =  process.env.PORT||8000;
 
+let dataRespond;
+
 const server = net.createServer((socket) => {
 
     //wasp authentication
@@ -55,10 +57,10 @@ const server = net.createServer((socket) => {
     app.post('/api/v1/option1' , (req, res) => {
    
         console.log('translator body')
-        console.log(req.body);
+        console.log(req.body.msgPDU);
 
 
-        let dataRespond;
+       
        
        
         
@@ -71,9 +73,9 @@ const server = net.createServer((socket) => {
         
         socket.on("data", serverData =>{
 
-             dataRespond = Buffer.from(serverData);
+             //  dataRespond = Buffer.from(serverData);
 
-             
+             console.log(serverData);
 
            
 
@@ -91,17 +93,22 @@ const server = net.createServer((socket) => {
 
             
                 
-
+             
 
 
             
         })
-        socket.pause()
-        // socket.on("end", function(){
 
-        //         console.log(dataRespond.toString());
+       
+
+        socket.pause();
+
+        // socket.on("end", function(){
+        //     console.log("END executed");
+        //     console.log(dataRespond.toString());
 
         // })
+        
        
     
     
