@@ -59,21 +59,14 @@ const server = net.createServer((socket) => {
 
 
         let dataRespond;
-        const msgPdu = `<?xml version="1.0"
-        encoding="ISO-8859-1"?> <ussd PDU="PSSRR"
-         MSISDN="27788425401" STRING="*121#" TID="1034"
-         REQID="0" TARIFF="*"> <attributes IMSI= "655101234567890"
-        SUBTYPE="P"
-         BRAND="TIKTAK" />
-         <cookie/> </ussd>`
+       
        
         
 
-        let msg = js2xmlparser.parse("xml",req.body);
-        console.log('parsed message')
-        console.log(msg);
         
-        socket.write(msg)
+        console.log(req.body.msgPDU);
+        
+        socket.write(req.body.msgPDU)
         socket.write(Buffer.from('ff' , 'hex'))
         
         socket.on("data", serverData =>{
