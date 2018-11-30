@@ -56,17 +56,10 @@ const server = net.createServer((socket) => {
 
     app.post('/api/v1/option1' , (req, res) => {
    
-        console.log('translator body')
+        console.log('translator body');
+        console.log("Option Endpoint Executed");
         console.log(req.body.msgPDU);
 
-
-       
-       
-       
-        
-
-        
-        console.log(req.body.msgPDU);
         
         socket.write(req.body.msgPDU)
         socket.write(Buffer.from('ff' , 'hex'))
