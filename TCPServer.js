@@ -60,7 +60,7 @@ const server = net.createServer((socket) => {
         console.log("Option Endpoint Executed");
         console.log(req.body.msgPDU);
 
-        
+        socket.resume()
         socket.write(req.body.msgPDU)
         socket.write(Buffer.from('ff' , 'hex'))
         socket.pause();
@@ -87,6 +87,7 @@ const server = net.createServer((socket) => {
                     body: serverData.toString()
             
                 })
+                socket.pause();
 
             
                 
