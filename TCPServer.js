@@ -87,7 +87,7 @@ const server = net.createServer((socket) => {
                     body: serverData.toString()
             
                 })
-                socket.pause();
+               
 
             
                 
