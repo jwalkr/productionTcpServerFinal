@@ -66,6 +66,7 @@ const server = net.createServer((socket) => {
         socket.pause();
         
         socket.on("data", serverData =>{
+            socket.resume()
 
              //  dataRespond = Buffer.from(serverData);
 
