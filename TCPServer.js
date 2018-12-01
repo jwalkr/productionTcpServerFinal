@@ -69,7 +69,7 @@ const server = net.createServer((socket) => {
              //  dataRespond = Buffer.from(serverData);
 
              console.log(serverData);
-             socket.pause();
+            
 
            
 
@@ -92,6 +92,17 @@ const server = net.createServer((socket) => {
 
             
         })
+        .on('error' , (error)=>{
+            console.log('Handled error')
+            console.log(error)
+           
+    
+    
+        })
+        .on('close' , () => {
+            console.log('session closed')
+        })
+        
 
        
 
