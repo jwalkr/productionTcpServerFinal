@@ -63,6 +63,7 @@ const server = net.createServer((socket) => {
         
         socket.write(req.body.msgPDU)
         socket.write(Buffer.from('ff' , 'hex'))
+        socket.end();
         
         socket.on("data", serverData =>{
 
