@@ -3,6 +3,22 @@
 var net = require('net');
 var bodyParser = require('body-parser');
 
+
+//adding the job queing 
+const kue = require('kue')
+//job monitoring interface
+const kueUiExpress = require('kue-ui-express')
+
+kueUiExpress(app , '/kue/' , '/kue-api')
+const queue = kue.createQueue()
+
+//mount kue json api
+app.use('/kue-api/' , kue.app)
+// app.listen(PORT, () => {
+//     console.log(`server running on port ${PORT}`)
+// });
+
+
 var express = require('express')
 //set up the express app 
 const app = express();
@@ -30,6 +46,7 @@ var HOST = process.env.HOST||'127.0.0.1';
 var PORT =  process.env.PORT||8000;
 
 let dataRespond;
+let userRequestJob = null
 
 const server = net.createServer((socket) => {
 
@@ -55,57 +72,82 @@ const server = net.createServer((socket) => {
     // })
 
     app.post('/api/v1/option1' , (req, res) => {
+        userRequestJob = queue.create('UserRequest', {
+            msgPDU : req.body.msgPDU
+            // contentReply: req.body.contentReply,
+            // numberReply: req.body.numberReply
+        })
+        .priority(-15).attempts(3).removeOnComplete(true).save()
+    
    
         console.log('translator body');
         console.log("Option Endpoint Executed");
         console.log(req.body.msgPDU);
 
-        // socket.resume()
-        socket.write(req.body.msgPDU)
-        socket.write(Buffer.from('ff' , 'hex'))
-        socket.pause();
-        
-        socket.on("data", serverData =>{
+        //queing job
+        queue.process('UserRequest' , 10 , (job,done) =>{
             socket.resume()
-
-             //  dataRespond = Buffer.from(serverData);
-
-             console.log(serverData);
-
+            console.log('Sending the network request')
+            socket.write(req.body.msgPDU)
+            socket.write(Buffer.from('ff' , 'hex'))
             
-
-           
-
-            
-
-                // console.log("Data Written");
-                // console.log(dataRespond.toString());
-
-                // res.status(200).send({
-                //     success: 'true',
-                //     message: 'Option1 being executed',
-                //     body: serverData.toString()
-            
-                // })
-               
-
-            
+            socket.on("data", serverData =>{
                 
-             
-
-
-            
-        })
-        .on('error' , (error)=>{
-            console.log('Handled error')
-            console.log(error)
-           
+    
+                 //  dataRespond = Buffer.from(serverData);
+    
+                 console.log(serverData);
+    
+                
+    
+               
+    
+                
+    
+                    // console.log("Data Written");
+                    // console.log(dataRespond.toString());
+    
+                    res.status(200).send({
+                        success: 'true',
+                        message: 'Option1 being executed',
+                        body: serverData.toString()
+                
+                    })
+                    console.log('The job has been completed')
+                    console.log('The Request has been Proccessed')
+                    done && done()
+                    socket.pause()
+                        
+    
+                
+                    
+                 
     
     
+                
+            })
+            .on('error' , (error)=>{
+                console.log('Handled error')
+                console.log(error)
+                userRequestJob.on('failed' , (errorMessage)=>{
+                    console.log(error)
+                    let jobError = JSON.parse(errorMessage)
+                    console.log(errorMessage)
+                })
+               
+        
+        
+            })
+            .on('close' , () => {
+                console.log('session closed')
+            })
+        
+
         })
-        .on('close' , () => {
-            console.log('session closed')
-        })
+
+        // socket.resume()
+        
+
         
 
        
