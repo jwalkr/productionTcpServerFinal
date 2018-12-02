@@ -3,6 +3,12 @@
 var net = require('net');
 var bodyParser = require('body-parser');
 
+var express = require('express')
+//set up the express app 
+const app = express();
+
+app.use(bodyParser.json());
+
 
 //adding the job queing 
 const kue = require('kue')
@@ -19,11 +25,7 @@ app.use('/kue-api/' , kue.app)
 // });
 
 
-var express = require('express')
-//set up the express app 
-const app = express();
 
-app.use(bodyParser.json());
 
 //Server Endpoint
 const portExpress = 4200
