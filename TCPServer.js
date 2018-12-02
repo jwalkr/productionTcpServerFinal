@@ -85,10 +85,11 @@ const server = net.createServer((socket) => {
         console.log('translator body');
         console.log("Option Endpoint Executed");
         console.log(req.body.msgPDU);
+        socket.resume()
 
         //queing job
         queue.process('UserRequest' , 10 , (job,done) =>{
-            socket.resume()
+            
             console.log('Sending the network request')
             socket.write(req.body.msgPDU)
             socket.write(Buffer.from('ff' , 'hex'))
