@@ -64,6 +64,7 @@ const server = net.createServer((socket) => {
             if(buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')){
                 socket.write(token)
                 socket.write(Buffer.from('ff' , 'hex'))
+                socket.write(Buffer.from('ff' , 'hex'))
             }
         }
         console.log('socket created')
