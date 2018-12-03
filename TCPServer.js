@@ -89,9 +89,9 @@ const server = net.createServer((socket) => {
             console.log('Sending the network request')
             socket.write(req.body.msgPDU)
             socket.write(Buffer.from('ff' , 'hex'))
-            
+            socket.pause()
             socket.on("data", serverData =>{
-                
+                socket.resume()
     
                 //  dataRespond = Buffer.from(serverData);
     
