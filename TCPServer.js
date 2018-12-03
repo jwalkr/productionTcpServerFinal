@@ -65,6 +65,7 @@ const server = net.createServer((socket) => {
                 socket.write(token)
                 socket.write(Buffer.from('ff' , 'hex'))
                 socket.write(Buffer.from('ff' , 'hex'))
+                socket.pause()
             }
         }
         console.log('socket created')
@@ -92,9 +93,9 @@ const server = net.createServer((socket) => {
             socket.on("data", serverData =>{
                 
     
-                 //  dataRespond = Buffer.from(serverData);
+                //  dataRespond = Buffer.from(serverData);
     
-                 console.log(serverData);
+                console.log(serverData);
     
                 
     
