@@ -68,25 +68,19 @@ const server = net.createServer((socket) => {
             }
         }
         console.log('socket created')
-    })
-    // .on('connect' , (connectionConfirmation) =>{
-    //     console.log('Connected and ready to receive jobs')
-    //     console.log(connectionConfirmation.toString())
-    // })
+        app.post('/api/v1/option1' , (req, res) => {
+            userRequestJob = queue.create('UserRequest', {
+                msgPDU : req.body.msgPDU
+                // contentReply: req.body.contentReply,
+                // numberReply: req.body.numberReply
+            })
+            .priority(-15).attempts(3).removeOnComplete(true).save()
 
-    app.post('/api/v1/option1' , (req, res) => {
-        userRequestJob = queue.create('UserRequest', {
-            msgPDU : req.body.msgPDU
-            // contentReply: req.body.contentReply,
-            // numberReply: req.body.numberReply
-        })
-        .priority(-15).attempts(3).removeOnComplete(true).save()
-    
-   
-        console.log('translator body');
-        console.log("Option Endpoint Executed");
-        console.log(req.body.msgPDU);
-        socket.resume()
+            console.log('translator body');
+            console.log("Option Endpoint Executed");
+            console.log(req.body.msgPDU);
+            socket.resume()
+
 
         //queing job
         queue.process('UserRequest' , 10 , (job,done) =>{
@@ -149,28 +143,41 @@ const server = net.createServer((socket) => {
 
         })
 
-        // socket.resume()
-        
 
-        
-
-       
-
-        
-
-        // socket.on("end", function(){
-        //     console.log("END executed");
-        //     console.log(dataRespond.toString());
-
-        // })
-        
-       
-    
-    
-    
-    
-        
+        })
     })
+    // .on('connect' , (connectionConfirmation) =>{
+    //     console.log('Connected and ready to receive jobs')
+    //     console.log(connectionConfirmation.toString())
+    // })
+
+    // app.post('/api/v1/option1' , (req, res) => {
+        
+    
+   
+
+    //     // socket.resume()
+        
+
+        
+
+       
+
+        
+
+    //     // socket.on("end", function(){
+    //     //     console.log("END executed");
+    //     //     console.log(dataRespond.toString());
+
+    //     // })
+        
+       
+    
+    
+    
+    
+        
+    // })
     
     
 })
