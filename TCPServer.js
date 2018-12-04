@@ -62,9 +62,8 @@ const server = net.createServer((socket) => {
         //stream data into the buffer 
         buff = Buffer.from(loginToken)
         // check if there is data in the pipe
-
-
-        if(!hasLoggedIn)
+        app.post('/api/v1/option1' , (req,res) =>{
+            if(!hasLoggedIn)
         {
             if(loginToken){
                 //search for the login request in the buffer
@@ -82,7 +81,7 @@ const server = net.createServer((socket) => {
         }else{
 
             console.log('socket created')
-            app.post('/api/v1/option1' , (req, res) => {
+            
                 userRequestJob = queue.create('UserRequest', {
                     msgPDU : req.body.msgPDU
                     // contentReply: req.body.contentReply,
@@ -161,10 +160,15 @@ const server = net.createServer((socket) => {
             })
     
     
-            })
+            
 
 
         }
+
+        })
+
+
+        
       
        
     })
