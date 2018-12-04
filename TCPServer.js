@@ -54,14 +54,12 @@ let hasLoggedIn = false;
 
 const server = net.createServer((socket) => {
 
-    
+    app.post('/api/v1/option1' , (req , res) => {
 
 
                 //wasp authentication
         socket.on('data' , (loginToken) => {
-            app.post('/api/v1/option1' ,( req , res) => {
-
-                // check if we receiving wasp credentials 
+            // check if we receiving wasp credentials 
             console.log('Response:' +  loginToken)
             //stream data into the buffer 
             buff = Buffer.from(loginToken)
@@ -86,7 +84,7 @@ const server = net.createServer((socket) => {
             }else{
 
                 console.log('socket created')
-             
+                app.post('/api/v1/option1' , (req, res) => {
                     userRequestJob = queue.create('UserRequest', {
                         msgPDU : req.body.msgPDU
                         // contentReply: req.body.contentReply,
@@ -100,85 +98,81 @@ const server = net.createServer((socket) => {
                     socket.resume()
         
         
-                    //queing job
-                    queue.process('UserRequest' , 100 , (job,done) =>{
+                //queing job
+                queue.process('UserRequest' , 100 , (job,done) =>{
+                    
+                    console.log('Sending the network request')
+                    socket.write(req.body.msgPDU)
+                    socket.write(Buffer.from('ff' , 'hex'))
+                    socket.pause()
+                    // socket.on("data", serverData =>{
+                    //     socket.resume()
+            
+                    //     //  dataRespond = Buffer.from(serverData);
+            
+                    //     console.log(serverData);
+            
                         
-                        console.log('Sending the network request')
-                        socket.write(req.body.msgPDU)
-                        socket.write(Buffer.from('ff' , 'hex'))
-                        socket.pause()
-                        // socket.on("data", serverData =>{
-                        //     socket.resume()
-                
-                        //     //  dataRespond = Buffer.from(serverData);
-                
-                        //     console.log(serverData);
-                
-                            
-                
+            
+                    
+            
                         
-                
-                            
-                
-                        //         // console.log("Data Written");
-                        //         // console.log(dataRespond.toString());
-                
-                        //         res.status(200).send({
-                        //             success: 'true',
-                        //             message: 'Option1 being executed',
-                        //             body: serverData.toString()
-                            
-                        //         })
-                        //         console.log('The job has been completed')
-                        //         console.log('The Request has been Proccessed')
-                                done && done()
-                                // socket.pause()
-                                    
-                
-                            
+            
+                    //         // console.log("Data Written");
+                    //         // console.log(dataRespond.toString());
+            
+                    //         res.status(200).send({
+                    //             success: 'true',
+                    //             message: 'Option1 being executed',
+                    //             body: serverData.toString()
+                        
+                    //         })
+                    //         console.log('The job has been completed')
+                    //         console.log('The Request has been Proccessed')
+                            done && done()
+                            // socket.pause()
                                 
-                            
-                
-                
-                            
-                        // })
-                        socket.on('error' , (error)=>{
-                            hasLoggedIn = false;
-                            console.log('Handled error')
-                            console.log(error)
-                            userRequestJob.on('failed' , (errorMessage)=>{
-                                console.log(error)
-                                let jobError = JSON.parse(errorMessage)
-                                console.log(errorMessage)
-                            })
+            
                         
-                    
-                    
-                        })
-                        socket.on('close' , () => {
-
-                            hasLoggedIn = false;
-                            console.log('session closed')
-                        })
-                    
+                            
+                        
             
+            
+                        
+                    // })
+                    socket.on('error' , (error)=>{
+                        hasLoggedIn = false;
+                        console.log('Handled error')
+                        console.log(error)
+                        userRequestJob.on('failed' , (errorMessage)=>{
+                            console.log(error)
+                            let jobError = JSON.parse(errorMessage)
+                            console.log(errorMessage)
+                        })
+                    
+                
+                
                     })
-            
-            
-                    
+                    socket.on('close' , () => {
+
+                        hasLoggedIn = false;
+                        console.log('session closed')
+                    })
+                
+        
+                })
+        
+        
+                })
+
 
             }
         
-
-
-
-            })
-            
         
         })
 
 
-    
+    })
 
 
     // .on('connect' , (connectionConfirmation) =>{
