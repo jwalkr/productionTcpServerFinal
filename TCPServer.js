@@ -62,8 +62,9 @@ const server = net.createServer((socket) => {
         //stream data into the buffer 
         buff = Buffer.from(loginToken)
         // check if there is data in the pipe
-        app.post('/api/v1/option1' , (req,res) =>{
-            if(!hasLoggedIn)
+
+
+        if(!hasLoggedIn)
         {
             if(loginToken){
                 //search for the login request in the buffer
@@ -73,7 +74,7 @@ const server = net.createServer((socket) => {
                     socket.write(token)
                     socket.write(Buffer.from('ff' , 'hex'))
                     socket.write(Buffer.from('ff' , 'hex'))
-                    //socket.pause()
+                    // socket.pause()
                 }
             }
 
@@ -81,7 +82,7 @@ const server = net.createServer((socket) => {
         }else{
 
             console.log('socket created')
-            
+            app.post('/api/v1/option1' , (req, res) => {
                 userRequestJob = queue.create('UserRequest', {
                     msgPDU : req.body.msgPDU
                     // contentReply: req.body.contentReply,
@@ -92,7 +93,7 @@ const server = net.createServer((socket) => {
                 console.log('translator body');
                 console.log("Option Endpoint Executed");
                 console.log(req.body.msgPDU);
-                //socket.resume()
+                socket.resume()
     
     
             //queing job
@@ -101,7 +102,7 @@ const server = net.createServer((socket) => {
                 console.log('Sending the network request')
                 socket.write(req.body.msgPDU)
                 socket.write(Buffer.from('ff' , 'hex'))
-                socket.pause()
+                // socket.pause()
                 // socket.on("data", serverData =>{
                 //     socket.resume()
         
@@ -160,15 +161,10 @@ const server = net.createServer((socket) => {
             })
     
     
-            
+            })
 
 
         }
-
-        })
-
-
-        
       
        
     })
