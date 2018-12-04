@@ -50,7 +50,7 @@ var PORT =  process.env.PORT||8000;
 let dataRespond;
 let userRequestJob = null
 
-let hasLoggedIn = false;
+
 
 const server = net.createServer((socket) => {
 
@@ -62,8 +62,7 @@ const server = net.createServer((socket) => {
         buff = Buffer.from(loginToken)
         // check if there is data in the pipe
 
-        if(!hasLoggedIn)
-        {
+     
             if(loginToken){
                 //search for the login request in the buffer
                 if(buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')){
@@ -74,10 +73,7 @@ const server = net.createServer((socket) => {
                     socket.write(Buffer.from('ff' , 'hex'))
                     socket.pause()
                 }
-            }
-
-
-        }else{
+          
 
             console.log('socket created')
             app.post('/api/v1/option1' , (req, res) => {
@@ -101,12 +97,12 @@ const server = net.createServer((socket) => {
                 socket.write(req.body.msgPDU)
                 socket.write(Buffer.from('ff' , 'hex'))
                 socket.pause()
-                // socket.on("data", serverData =>{
-                //     socket.resume()
+                 socket.on("data", serverData =>{
+                    socket.resume()
         
-                //     //  dataRespond = Buffer.from(serverData);
+                    //  dataRespond = Buffer.from(serverData);
         
-                //     console.log(serverData);
+                    console.log(serverData);
         
                     
         
@@ -114,19 +110,19 @@ const server = net.createServer((socket) => {
         
                     
         
-                //         // console.log("Data Written");
-                //         // console.log(dataRespond.toString());
+                        // console.log("Data Written");
+                        // console.log(dataRespond.toString());
         
-                //         res.status(200).send({
-                //             success: 'true',
-                //             message: 'Option1 being executed',
-                //             body: serverData.toString()
+                        res.status(200).send({
+                            success: 'true',
+                            message: 'Option1 being executed',
+                            body: serverData.toString()
                     
-                //         })
-                //         console.log('The job has been completed')
-                //         console.log('The Request has been Proccessed')
-                //         done && done()
-                //         socket.pause()
+                        })
+                        console.log('The job has been completed')
+                        console.log('The Request has been Proccessed')
+                        done && done()
+                        socket.pause()
                             
         
                     
@@ -135,9 +131,9 @@ const server = net.createServer((socket) => {
         
         
                     
-                // })
+                })
                 socket.on('error' , (error)=>{
-                    hasLoggedIn = false;
+                 
                     console.log('Handled error')
                     console.log(error)
                     userRequestJob.on('failed' , (errorMessage)=>{
@@ -151,7 +147,6 @@ const server = net.createServer((socket) => {
                 })
                 socket.on('close' , () => {
 
-                    hasLoggedIn = false;
                     console.log('session closed')
                 })
             
