@@ -101,12 +101,12 @@ const server = net.createServer((socket) => {
                 socket.write(req.body.msgPDU)
                 socket.write(Buffer.from('ff' , 'hex'))
                 socket.pause()
-                socket.on("data", serverData =>{
-                    socket.resume()
+                // socket.on("data", serverData =>{
+                //     socket.resume()
         
-                    //  dataRespond = Buffer.from(serverData);
+                //     //  dataRespond = Buffer.from(serverData);
         
-                    console.log(serverData);
+                //     console.log(serverData);
         
                     
         
@@ -114,19 +114,19 @@ const server = net.createServer((socket) => {
         
                     
         
-                        // console.log("Data Written");
-                        // console.log(dataRespond.toString());
+                //         // console.log("Data Written");
+                //         // console.log(dataRespond.toString());
         
-                        res.status(200).send({
-                            success: 'true',
-                            message: 'Option1 being executed',
-                            body: serverData.toString()
+                //         res.status(200).send({
+                //             success: 'true',
+                //             message: 'Option1 being executed',
+                //             body: serverData.toString()
                     
-                        })
-                        console.log('The job has been completed')
-                        console.log('The Request has been Proccessed')
-                        done && done()
-                        socket.pause()
+                //         })
+                //         console.log('The job has been completed')
+                //         console.log('The Request has been Proccessed')
+                //         done && done()
+                //         socket.pause()
                             
         
                     
@@ -135,8 +135,8 @@ const server = net.createServer((socket) => {
         
         
                     
-                })
-                .on('error' , (error)=>{
+                // })
+                socket.on('error' , (error)=>{
                     hasLoggedIn = false;
                     console.log('Handled error')
                     console.log(error)
@@ -149,7 +149,7 @@ const server = net.createServer((socket) => {
             
             
                 })
-                .on('close' , () => {
+                socket.on('close' , () => {
 
                     hasLoggedIn = false;
                     console.log('session closed')
