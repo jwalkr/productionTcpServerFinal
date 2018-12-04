@@ -50,8 +50,6 @@ var PORT =  process.env.PORT||8000;
 let dataRespond;
 let userRequestJob = null
 
-let hasLoggedIn = false;
-
 const server = net.createServer((socket) => {
 
     //wasp authentication
@@ -61,110 +59,93 @@ const server = net.createServer((socket) => {
         //stream data into the buffer 
         buff = Buffer.from(loginToken)
         // check if there is data in the pipe
-
-        if(!hasLoggedIn)
-        {
-            if(loginToken){
-                //search for the login request in the buffer
-                if(buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')){
-
-                    hasLoggedIn = true;
-                    socket.write(token)
-                    socket.write(Buffer.from('ff' , 'hex'))
-                    socket.write(Buffer.from('ff' , 'hex'))
-                    socket.pause()
-                }
-            }
-
-
-        }else{
-
-            console.log('socket created')
-            app.post('/api/v1/option1' , (req, res) => {
-                userRequestJob = queue.create('UserRequest', {
-                    msgPDU : req.body.msgPDU
-                    // contentReply: req.body.contentReply,
-                    // numberReply: req.body.numberReply
-                })
-                .priority(-15).attempts(3).removeOnComplete(true).save()
-    
-                console.log('translator body');
-                console.log("Option Endpoint Executed");
-                console.log(req.body.msgPDU);
-                socket.resume()
-    
-    
-            //queing job
-            queue.process('UserRequest' , 100 , (job,done) =>{
-                
-                console.log('Sending the network request')
-                socket.write(req.body.msgPDU)
+        if(loginToken){
+            //search for the login request in the buffer
+            if(buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')){
+                socket.write(token)
+                socket.write(Buffer.from('ff' , 'hex'))
                 socket.write(Buffer.from('ff' , 'hex'))
                 socket.pause()
-                // socket.on("data", serverData =>{
-                //     socket.resume()
-        
-                //     //  dataRespond = Buffer.from(serverData);
-        
-                //     console.log(serverData);
-        
-                    
-        
-                   
-        
-                    
-        
-                //         // console.log("Data Written");
-                //         // console.log(dataRespond.toString());
-        
-                //         res.status(200).send({
-                //             success: 'true',
-                //             message: 'Option1 being executed',
-                //             body: serverData.toString()
-                    
-                //         })
-                //         console.log('The job has been completed')
-                //         console.log('The Request has been Proccessed')
-                //         done && done()
-                //         socket.pause()
-                            
-        
-                    
-                        
-                     
-        
-        
-                    
-                // })
-                socket.on('error' , (error)=>{
-                    hasLoggedIn = false;
-                    console.log('Handled error')
-                    console.log(error)
-                    userRequestJob.on('failed' , (errorMessage)=>{
-                        console.log(error)
-                        let jobError = JSON.parse(errorMessage)
-                        console.log(errorMessage)
-                    })
-                   
-            
-            
-                })
-                socket.on('close' , () => {
-
-                    hasLoggedIn = false;
-                    console.log('session closed')
-                })
-            
-    
-            })
-    
-    
-            })
-
-
+            }
         }
-      
-       
+        console.log('socket created')
+        app.post('/api/v1/option1' , (req, res) => {
+            userRequestJob = queue.create('UserRequest', {
+                msgPDU : req.body.msgPDU
+                // contentReply: req.body.contentReply,
+                // numberReply: req.body.numberReply
+            })
+            .priority(-15).attempts(3).removeOnComplete(true).save()
+
+            console.log('translator body');
+            console.log("Option Endpoint Executed");
+            console.log(req.body.msgPDU);
+            socket.resume()
+
+
+        //queing job
+        queue.process('UserRequest' , 100 , (job,done) =>{
+            
+            console.log('Sending the network request')
+            socket.write(req.body.msgPDU)
+            socket.write(Buffer.from('ff' , 'hex'))
+            socket.pause()
+            socket.on("data", serverData =>{
+                socket.resume()
+    
+                //  dataRespond = Buffer.from(serverData);
+    
+                console.log(serverData);
+    
+                
+    
+               
+    
+                
+    
+                    // console.log("Data Written");
+                    // console.log(dataRespond.toString());
+    
+                    res.status(200).send({
+                        success: 'true',
+                        message: 'Option1 being executed',
+                        body: serverData.toString()
+                
+                    })
+                    console.log('The job has been completed')
+                    console.log('The Request has been Proccessed')
+                    done && done()
+                    socket.pause()
+                        
+    
+                
+                    
+                 
+    
+    
+                
+            })
+            .on('error' , (error)=>{
+                console.log('Handled error')
+                console.log(error)
+                userRequestJob.on('failed' , (errorMessage)=>{
+                    console.log(error)
+                    let jobError = JSON.parse(errorMessage)
+                    console.log(errorMessage)
+                })
+               
+        
+        
+            })
+            .on('close' , () => {
+                console.log('session closed')
+            })
+        
+
+        })
+
+
+        })
     })
     // .on('connect' , (connectionConfirmation) =>{
     //     console.log('Connected and ready to receive jobs')
