@@ -50,6 +50,7 @@ var PORT =  process.env.PORT||8000;
 let dataRespond;
 let userRequestJob = null
 
+
 const server = net.createServer((socket) => {
 
     //wasp authentication
@@ -68,6 +69,7 @@ const server = net.createServer((socket) => {
                 socket.pause()
             }
         }
+        
         console.log('socket created')
         app.post('/api/v1/option1' , (req, res) => {
             userRequestJob = queue.create('UserRequest', {
