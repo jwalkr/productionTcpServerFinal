@@ -72,14 +72,17 @@ const server = net.createServer((socket) => {
                 
                 //search for the login request in the buffer
                 if(iswriting === false){
+                    console.log('entering logging in state')
                     if(buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')){
-
+                        console.log('currently busy writing the token' + token )
                         hasLoggedIn = true;
                         iswriting = true
                         
                         socket.write(token)
                         socket.write(Buffer.from('ff' , 'hex'))
                         iswriting = false 
+                        console.log('finished writing , writing state back to ' + iswriting)
+                        console.log('socket created')
                         //socket.write(Buffer.from('ff' , 'hex'))
                         // socket.pause()
                     }
@@ -90,9 +93,10 @@ const server = net.createServer((socket) => {
             }
 
 
-        }else{
+        }else if(hasLoggedIn === true && iswriting === false){
+            console.log("has entered job state and login and writing status are " + hasLoggedIn + iswriting)
 
-            console.log('socket created')
+            
             app.post('/api/v1/option1' , (req, res) => {
                 userRequestJob = queue.create('UserRequest', {
                     msgPDU : req.body.msgPDU
