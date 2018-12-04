@@ -51,6 +51,7 @@ let dataRespond;
 let userRequestJob = null
 
 let hasLoggedIn = false;
+let iswriting = false
 
 const server = net.createServer((socket) => {
 
@@ -63,19 +64,29 @@ const server = net.createServer((socket) => {
         buff = Buffer.from(loginToken)
         // check if there is data in the pipe
 
+        console.log(hasLoggedIn)
 
         if(!hasLoggedIn)
         {
             if(loginToken){
+                
                 //search for the login request in the buffer
-                if(buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')){
+                if(iswriting === false){
+                    if(buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')){
 
-                    hasLoggedIn = true;
-                    socket.write(token)
-                    socket.write(Buffer.from('ff' , 'hex'))
-                    socket.write(Buffer.from('ff' , 'hex'))
-                    // socket.pause()
+                        hasLoggedIn = true;
+                        iswriting = true
+                        
+                        socket.write(token)
+                        socket.write(Buffer.from('ff' , 'hex'))
+                        iswriting = false 
+                        //socket.write(Buffer.from('ff' , 'hex'))
+                        // socket.pause()
+                    }
+
                 }
+
+                
             }
 
 
@@ -102,8 +113,8 @@ const server = net.createServer((socket) => {
                 console.log('Sending the network request')
                 socket.write(req.body.msgPDU)
                 socket.write(Buffer.from('ff' , 'hex'));
-                socket.write(Buffer.from('ff' , 'hex'));
-                console.log("Network Request");
+                //socket.write(Buffer.from('ff' , 'hex'));
+                
                 // socket.pause()
                 // socket.on("data", serverData =>{
                 //     socket.resume()
