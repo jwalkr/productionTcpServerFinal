@@ -74,7 +74,7 @@ const server = net.createServer((socket) => {
                     socket.write(token)
                     socket.write(Buffer.from('ff' , 'hex'))
                     socket.write(Buffer.from('ff' , 'hex'))
-                    socket.pause()
+                    //socket.pause()
                 }
             }
 
@@ -93,7 +93,7 @@ const server = net.createServer((socket) => {
                 console.log('translator body');
                 console.log("Option Endpoint Executed");
                 console.log(req.body.msgPDU);
-                socket.resume()
+                //socket.resume()
     
     
             //queing job
