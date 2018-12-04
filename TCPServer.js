@@ -84,7 +84,7 @@ const server = net.createServer((socket) => {
 
 
         //queing job
-        queue.process('UserRequest' , 10 , (job,done) =>{
+        queue.process('UserRequest' , 100 , (job,done) =>{
             
             console.log('Sending the network request')
             socket.write(req.body.msgPDU)
