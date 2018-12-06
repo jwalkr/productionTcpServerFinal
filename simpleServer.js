@@ -35,4 +35,6 @@ const server = net.createServer((socket) => {
     })
 })
 
+server.listen(port, host)
+
 
