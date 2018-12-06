@@ -1,4 +1,4 @@
-// 'use strict'
+/ 'use strict'
 
 var net = require('net');
 
@@ -6,6 +6,8 @@ var HOST = process.env.HOST||'127.0.0.1';
 var PORT =  process.env.PORT||8000;
 
 let buff = null;
+
+let buffRespond = null;
 
 const token = '<?xml version="1.0" encoding="ISO-8859-1"?> <cookie VALUE="UXCKB1TAIS7XT6"/>';
 const msgPDU = `<?xml version="1.0" encoding="ISO-8859-1"?>
@@ -26,9 +28,6 @@ BRAND="TIKTAK"
 </ussd>`
 
 
-let hasLoggedIn = false;
-
-
 net.createServer(function(sock) {
 
    sock.on('data', function(data) {
@@ -38,90 +37,54 @@ net.createServer(function(sock) {
 
        if(data)
        {
-           
 
-           logIn(buff).then(data =>{
+           if(buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENU_F02"/>'))
+           {
 
-                onWritePdu().then(data =>{
-                    console.log("PSSRR SENT");
-                }).catch(err=>{
 
-                    console.log("PSSRR NOT SENT");
+                   sock.write(token) ;
+                   sock.write(Buffer.from('ff', 'hex'));
+
+                   sock.on("data", info => {
+                           
+
+                           let hasSenWritten =sock.write(msgPDU);
+                           let hasSendPDU = sock.write(Buffer.from('ff', 'hex'));
+
+                           if(hasSenWritten)
+                           {
+                               console.log("Check PDU message sending================33");
+
+                               console.log(hasSenWritten);
+
+                               sock.pause();
+
+                           }
+
+
+
+
+
+
                 })
 
-           }).then(data =>{
 
-                console.log("User not logged in");
-                hasLoggedIn = data;
 
-           }).catch(err=>{
-               console.log("ERRR");
-           })
 
-           
+
+
+
+
+           }
 
        }
+     
 
 
 
-   }).o
+   })
 
 }).listen(PORT,HOST)
 
 console.log("Server listening on "+HOST+":"+PORT);
-
-
-function logIn(buff)
-{
-
-    let promise = new Promise((resolve,reject)=>{
-
-        if(buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENU_F02"/>'))
-        {
-            console.log("Loging IN .........");
-            sock.write(token) ;
-            sock.write(Buffer.from('ff', 'hex'));
-            resolve(true);
-            
-
-
-        }else{
-            console.log("False Login......");
-            reject(false);
-
-        }
-    })
-
-    return promise;
-
-
-}
-
-function onWritePdu()
-{
-    
-
-
-    let promise = new Promise((resolve,reject)=>{
-
-        let hasSenWritten =sock.write(msgPDU);
-        sock.write(Buffer.from('ff', 'hex'));
-
-        if(hasSenWritten)
-        {
-            sock.pause();
-            resolve(true);
-
-        }else{
-
-            reject(false);
-        }
-
-
-    })
-
-    return promise;
-
-}
-
 
