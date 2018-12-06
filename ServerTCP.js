@@ -54,6 +54,8 @@ net.createServer(function(sock) {
                 console.log("User not logged in");
                 hasLoggedIn = data;
 
+           }).catch(err=>{
+               console.log("ERRR");
            })
 
            
