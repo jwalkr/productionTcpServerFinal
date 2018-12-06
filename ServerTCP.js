@@ -47,7 +47,6 @@ net.createServer(function (sock) {
                      console.log("Writing Token");
                     sock.write(token);
                     sock.write(Buffer.from('ff', 'hex'));
-                    buff = Buffer.from("");
             }
 
 
@@ -56,7 +55,8 @@ net.createServer(function (sock) {
             console.log("Writing Message PDU");
             sock.write(msgPDU);
             sock.write(Buffer.from('ff', 'hex'));
-            buff = Buffer.from("");
+            
+            sock.pause();
 
         }
 
@@ -71,7 +71,6 @@ net.createServer(function (sock) {
 
 console.log("Server listening on " + HOST + ":" + PORT);
 
-funct
 
 
 
