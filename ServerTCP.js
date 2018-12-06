@@ -71,7 +71,6 @@ net.createServer(function (sock) {
 
 console.log("Server listening on " + HOST + ":" + PORT);
 
-funct
 
 
 
