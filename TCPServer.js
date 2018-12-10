@@ -125,18 +125,26 @@ const server = net.createServer((socket) => {
 
                             socket.on("data", waspResponse => {
                                 console.log("Res from wasp");
-                                
-                                let xmlResponse = waspResponse.toString();
+            
                                 let waspToClient = {
-                                    msgPDU: xmlResponse
+                                    msgPDU: waspResponse.toString()
                                 }
                                 console.log(waspToClient);
+                                
                                 waspMessage =  waspResponse;
-                                //let waspBuffering = Buffer.from(waspResponse);
-                                //res.send("r7rututiti");
-                                //res.status(200).write(waspToClient);
-                                //res.setHeader('Content-Type', 'application/json');
+                                
+                                if (waspMessage) {
 
+                                    let waspToClient = {
+                                        msgPDU: waspMessage
+                                    }
+                                    console.log("Responding.....");
+                                    res.send(waspToClient);
+                                    
+                                } else {
+    
+                                    console.log("Buff not filled");
+                                }
                                
 
 
@@ -144,18 +152,7 @@ const server = net.createServer((socket) => {
 
                             })
 
-                            if (waspMessage) {
-
-                                let waspToClient = {
-                                    msgPDU: waspMessage
-                                }
-                                console.log("Responding.....");
-                                res.send(waspToClient);
-                                
-                            } else {
-
-                                console.log("Buff not filled");
-                            }
+                            
 
 
 
