@@ -53,7 +53,7 @@ let userRequestJob = null
 let hasLoggedIn = false;
 let iswriting = false
 
-let waspResponse = null;
+let waspMessage = null;
 
 const server = net.createServer((socket) => {
     //wasp authentication
@@ -125,29 +125,37 @@ const server = net.createServer((socket) => {
 
                             socket.on("data", waspResponse => {
                                 console.log("Res from wasp");
-                                console.log(waspResponse.toString());
+                                
                                 let xmlResponse = waspResponse.toString();
                                 let waspToClient = {
                                     msgPDU: xmlResponse
                                 }
                                 console.log(waspToClient);
-                                let waspBuffering = Buffer.from(waspResponse);
+                                waspMessage =  waspResponse;
+                                //let waspBuffering = Buffer.from(waspResponse);
                                 //res.send("r7rututiti");
                                 //res.status(200).write(waspToClient);
                                 //res.setHeader('Content-Type', 'application/json');
 
-                                if (waspBuffering) {
-
-                                    res.send(waspBuffering);
-                                } else {
-
-                                    console.log("Buff not filled");
-                                }
+                               
 
 
 
 
                             })
+
+                            if (waspMessage) {
+
+                                let waspToClient = {
+                                    msgPDU: waspMessage
+                                }
+                                console.log("Responding.....");
+                                res.send(waspToClient);
+                                
+                            } else {
+
+                                console.log("Buff not filled");
+                            }
 
 
 
@@ -161,15 +169,6 @@ const server = net.createServer((socket) => {
                     }
 
                     done && done()
-
-
-
-
-
-
-
-
-
 
 
                     socket.on('error', (error) => {
