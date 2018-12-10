@@ -131,7 +131,7 @@ const server = net.createServer((socket) => {
                                     msgPDU: xmlResponse
                                 }
                                 console.log(waspToClient);
-                                let waspBuffering = Buffer.from(waspToClient);
+                                let waspBuffering = Buffer.from(waspResponse);
                                 //res.send("r7rututiti");
                                 //res.status(200).write(waspToClient);
                                 //res.setHeader('Content-Type', 'application/json');
