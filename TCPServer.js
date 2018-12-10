@@ -136,6 +136,9 @@ const server = net.createServer((socket) => {
                         
                         done && done()
 
+                    }).catch(errResult =>{
+                        console.log("Something happened");
+                        console.log(errResult);
                     })
 
 
