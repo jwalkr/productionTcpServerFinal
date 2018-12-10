@@ -138,12 +138,14 @@ const server = net.createServer((socket) => {
                 //         // console.log("Data Written");
                 //         // console.log(dataRespond.toString());
         
-                //         res.status(200).send({
-                //             success: 'true',
-                //             message: 'Option1 being executed',
-                //             body: serverData.toString()
+                        console.log("Sending ....response ....");
+                        console.log(serverData.toString());
+                        res.status(200).send({
+                            success: 'true',
+                            message: 'Option1 being executed',
+                            body: serverData.toString()
                     
-                //         })
+                        })
                 //         console.log('The job has been completed')
                 //         console.log('The Request has been Proccessed')
                         done && done()

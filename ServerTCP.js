@@ -32,7 +32,7 @@ const msgPDU = `<?xml version="1.0" encoding="ISO-8859-1"?>
 net.createServer(function (sock) {
 
     sock.on('data', function (data) {
-
+        sock.resume();
         buff = Buffer.from(data);
 
         if(!hasLoggedIn)
@@ -51,12 +51,26 @@ net.createServer(function (sock) {
 
 
         }else{
+            
 
             console.log("Writing Message PDU");
             sock.write(msgPDU);
             sock.write(Buffer.from('ff', 'hex'));
             
-            sock.pause();
+            //sock.pause();
+            if(!Buffer.isBuffer(buff))
+            {
+                console.log("is buffer");
+                ///console.log(buff.toString());
+
+            }else{
+
+                console.log("Pausing...");
+                 sock.pause();
+                
+            }
+            
+
 
         }
 
