@@ -53,8 +53,11 @@ let userRequestJob = null
 let hasLoggedIn = false;
 let iswriting = false
 
-const server = net.createServer((socket) => { 
+let waspResponse = null;
+
+const server = net.createServer((socket) => {
     //wasp authentication
+
     socket.on('data', (loginToken) => {
         // check if we receiving wasp credentials 
         console.log('Response:' + loginToken)
@@ -80,7 +83,7 @@ const server = net.createServer((socket) => {
                         iswriting = false
                         console.log('finished writing , writing state back to ' + iswriting)
                         console.log('socket created')
-                       
+
                     }
 
                 }
@@ -89,8 +92,8 @@ const server = net.createServer((socket) => {
             }
 
 
-        } else if (hasLoggedIn) {
-            console.log("has entered job state and login and writing status are " + hasLoggedIn + iswriting)
+        } else {
+            console.log("logged == " + hasLoggedIn)
 
 
             app.post('/api/v1/option1', (req, res) => {
@@ -111,19 +114,33 @@ const server = net.createServer((socket) => {
                 queue.process('UserRequest', 10, (job, done) => {
 
                     console.log('Sending the network request')
-                    socket.write(req.body.msgPDU)
-                    socket.write(Buffer.from('ff', 'hex'));
+                    // socket.write(req.body.msgPDU)
+                    // socket.write(Buffer.from('ff', 'hex'));
 
-                    console.log("Sending ....response ....");
-                    console.log(loginToken.toString());
-                    res.status(200).send({
-                        success: 'true',
-                        message: 'Option1 being executed',
-                        body: loginToken.toString()
+                    onWriteToWasp(socket).then(result => {
+                        console.log("OnPromise result");
+                        console.log(result);
+                        socket.on("data", waspResponse=>{
+                            console.log("Res from wasp");
+                            console.log(waspResponse.toString());
+
+                            res.status(200).send({
+                                success: 'true',
+                                message: 'PDU executed',
+                                body: waspResponse.toString()
+    
+                            })
+    
+
+                        })
+                        
+                        done && done()
 
                     })
 
-                    done && done()
+
+
+
 
 
 
@@ -161,41 +178,44 @@ const server = net.createServer((socket) => {
 
 
     })
-    // .on('connect' , (connectionConfirmation) =>{
-    //     console.log('Connected and ready to receive jobs')
-    //     console.log(connectionConfirmation.toString())
-    // })
-
-    // app.post('/api/v1/option1' , (req, res) => {
-
-
-
-
-    //     // socket.resume()
-
-
-
-
-
-
-
-
-    //     // socket.on("end", function(){
-    //     //     console.log("END executed");
-    //     //     console.log(dataRespond.toString());
-
-    //     // })
-
-
-
-
-
-
-
-    // })
 
 
 })
+
+//A function to write to the wasp
+function onWriteToWasp(socket) {
+
+    let promise = new Promise((resolve, reject) => {
+
+        let hasWritten = socket.write(req.body.msgPDU)
+        let hasTerminated = socket.write(Buffer.from('ff', 'hex'));
+
+        if (hasWritten) {
+            if (hasTerminated) {
+                let result = {
+                    executed: true
+                }
+                resolve(result);
+
+            } else {
+                let result = {
+                    executed: false
+                }
+                reject(result);
+            }
+
+        } else {
+            let result = {
+                executed: false
+            }
+            reject(result);
+        }
+
+    })
+
+    return promise;
+
+}
 
 server.listen(PORT, HOST)
 
