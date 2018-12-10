@@ -53,13 +53,7 @@ let userRequestJob = null
 let hasLoggedIn = false;
 let iswriting = false
 
-<<<<<<< HEAD
 const server = net.createServer((socket) => { 
-=======
-const server = net.createServer((socket) => {
-
-
->>>>>>> 8c631cf57d2c4bcdc78a519226eab051cb4bea82
     //wasp authentication
     socket.on('data', (loginToken) => {
         // check if we receiving wasp credentials 
