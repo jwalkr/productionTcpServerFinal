@@ -126,18 +126,16 @@ const server = net.createServer((socket) => {
                             socket.on("data", waspResponse=>{
                                 console.log("Res from wasp");
                                 console.log(waspResponse.toString());
-    
-                                res.status(200).send({
-                                    success: 'true',
-                                    message: 'PDU executed',
-                                    body: waspResponse.toString()
-        
-                                })
+                                let xmlResponse = waspResponse.toString();
+                                let waspToClient = {
+                                    msgPDU: xmlResponse
+                                }
+                                res.status(200).send(waspToClient);
         
     
                             })
                             
-                            done && done()
+                           
             
                         } else {
 
@@ -148,6 +146,7 @@ const server = net.createServer((socket) => {
                         console.log("Something Happened=======");
                     }
 
+                    done && done()
                   
 
 
