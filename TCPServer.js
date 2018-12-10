@@ -137,7 +137,8 @@ const server = net.createServer((socket) => {
                                     'Content-Type': 'application/json',
                                     'Trailer': 'Content-MD5'
                                 });
-                                res.write(waspToClient);
+
+                                res.write(JSON.stringify(waspToClient));
                                 res.addTrailers({
                                     'Content-MD5': '7895bf4b8828b55ceaf47747b4bca667'
                                 });
