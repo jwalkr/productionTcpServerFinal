@@ -133,16 +133,10 @@ const server = net.createServer((socket) => {
                                 console.log(waspToClient);
                                 //res.send("r7rututiti");
                                 //res.status(200).write(waspToClient);
-                                res.writeHead(200, {
-                                    'Content-Type': 'application/json',
-                                    'Trailer': 'Content-MD5'
-                                });
+                                res.setHeader('Content-Type', 'application/json');
 
-                                res.write(JSON.stringify(waspToClient));
-                                res.addTrailers({
-                                    'Content-MD5': '7895bf4b8828b55ceaf47747b4bca667'
-                                });
-                                res.end();
+                                res.send(JSON.stringify(waspToClient));
+                               
 
 
                             })
