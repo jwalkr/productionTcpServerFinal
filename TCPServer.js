@@ -130,8 +130,8 @@ const server = net.createServer((socket) => {
                                 let waspToClient = {
                                     msgPDU: xmlResponse
                                 }
-
-                                res.send("r7rututiti");
+                                console.log(waspToClient);
+                                //res.send("r7rututiti");
                                 //res.status(200).write(waspToClient);
         
     
