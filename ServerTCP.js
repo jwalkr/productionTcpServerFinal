@@ -233,8 +233,4 @@ server.listen(PORT, HOST)
 
 // }).listen(PORT,HOST)
 
-<<<<<<< HEAD
 // }
-=======
-// console.log("Server listening on "+HOST+":"+PORT);
->>>>>>> 299f34867d5d4d2d2247d1288a44f83f9466b423
