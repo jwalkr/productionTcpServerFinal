@@ -119,11 +119,11 @@ const server = net.createServer((socket) => {
 
                     let hasWritten = socket.write(req.body.msgPDU)
                     let hasTerminated = socket.write(Buffer.from('ff', 'hex'));
-            
+
                     if (hasWritten) {
                         if (hasTerminated) {
-                            
-                            socket.on("data", waspResponse=>{
+
+                            socket.on("data", waspResponse => {
                                 console.log("Res from wasp");
                                 console.log(waspResponse.toString());
                                 let xmlResponse = waspResponse.toString();
@@ -133,23 +133,32 @@ const server = net.createServer((socket) => {
                                 console.log(waspToClient);
                                 //res.send("r7rututiti");
                                 //res.status(200).write(waspToClient);
-        
-    
+                                res.writeHead(200, {
+                                    'Content-Type': 'application/json',
+                                    'Trailer': 'Content-MD5'
+                                });
+                                res.write(waspToClient);
+                                res.addTrailers({
+                                    'Content-MD5': '7895bf4b8828b55ceaf47747b4bca667'
+                                });
+                                res.end();
+
+
                             })
-                            
-                           
-            
+
+
+
                         } else {
 
-                           console.log("Something Happened");
+                            console.log("Something Happened");
                         }
-            
+
                     } else {
                         console.log("Something Happened=======");
                     }
 
                     done && done()
-                  
+
 
 
 
