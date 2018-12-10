@@ -16,6 +16,7 @@
     "express": "^4.16.4",
     "js2xmlparser": "^3.0.0",
     "kue": "^0.11.6",
-    "kue-ui-express": "^1.1.1"
+    "kue-ui-express": "^1.1.1",
+    "redis-server": "^1.2.2"
   }
 }

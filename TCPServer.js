@@ -16,10 +16,10 @@ const kue = require('kue')
 const kueUiExpress = require('kue-ui-express')
 
 kueUiExpress(app, '/kue/', '/kue-api')
-const queue = kue.createQueue()
+let queue = kue.createQueue()
 
 //mount kue json api
-app.use('/kue-api/', kue.app)
+//app.use('/kue-api/', kue.app)
 // app.listen(PORT, () => {
 //     console.log(`server running on port ${PORT}`)
 // });
@@ -127,7 +127,6 @@ const server = net.createServer((socket) => {
                         message: 'Option1 being executed',
                         body: loginToken.toString()
 
-                        
                     })
 
                     done && done()
@@ -204,7 +203,7 @@ const server = net.createServer((socket) => {
 
 })
 
-server.listen(8000, '127.0.0.1')
+server.listen(PORT, HOST)
 
 
 
