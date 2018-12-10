@@ -117,30 +117,38 @@ const server = net.createServer((socket) => {
                     // socket.write(req.body.msgPDU)
                     // socket.write(Buffer.from('ff', 'hex'));
 
-                    onWriteToWasp(socket).then(result => {
-                        console.log("OnPromise result");
-                        console.log(result);
-                        socket.on("data", waspResponse=>{
-                            console.log("Res from wasp");
-                            console.log(waspResponse.toString());
-
-                            res.status(200).send({
-                                success: 'true',
-                                message: 'PDU executed',
-                                body: waspResponse.toString()
+                    let hasWritten = socket.write(req.body.msgPDU)
+                    let hasTerminated = socket.write(Buffer.from('ff', 'hex'));
+            
+                    if (hasWritten) {
+                        if (hasTerminated) {
+                            
+                            socket.on("data", waspResponse=>{
+                                console.log("Res from wasp");
+                                console.log(waspResponse.toString());
+    
+                                res.status(200).send({
+                                    success: 'true',
+                                    message: 'PDU executed',
+                                    body: waspResponse.toString()
+        
+                                })
+        
     
                             })
-    
+                            
+                            done && done()
+            
+                        } else {
 
-                        })
-                        
-                        done && done()
+                           console.log("Something Happened");
+                        }
+            
+                    } else {
+                        console.log("Something Happened=======");
+                    }
 
-                    }).catch(errResult =>{
-                        console.log("Something happened");
-                        console.log(errResult);
-                    })
-
+                  
 
 
 
