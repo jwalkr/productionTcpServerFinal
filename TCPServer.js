@@ -131,12 +131,20 @@ const server = net.createServer((socket) => {
                                     msgPDU: xmlResponse
                                 }
                                 console.log(waspToClient);
+                                let waspBuffering = Buffer.from(waspToClient);
                                 //res.send("r7rututiti");
                                 //res.status(200).write(waspToClient);
-                                res.setHeader('Content-Type', 'application/json');
+                                //res.setHeader('Content-Type', 'application/json');
 
-                                res.send(JSON.stringify(waspToClient));
-                               
+                                if (waspBuffering) {
+
+                                    res.send(waspBuffering);
+                                } else {
+
+                                    console.log("Buff not filled");
+                                }
+
+
 
 
                             })
