@@ -141,7 +141,7 @@ const server = net.createServer((socket) => {
                                     res.writeHead(200, {
                                         'Content-Type': 'application/json'
                                     });
-                                    res.end(waspToClient);
+                                    res.end(JSON.stringify(waspToClient));
                                     //res.status(200).send(waspToClient);
 
                                 } else {
