@@ -142,7 +142,9 @@ const server = net.createServer((socket) => {
                                     //     'Content-Type': 'application/json'
                                     // });
                                     // res.end(JSON.stringify(waspToClient));
-                                    res.status(200).send(waspToClient);
+                                    //res.status(200).send(waspToClient);
+                                    res.setHeader("Content-Type", "text/html");
+                                    res.write("<p>Hello World</p>");
 
                                 } else {
 
