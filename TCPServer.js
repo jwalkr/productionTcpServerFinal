@@ -136,13 +136,13 @@ const server = net.createServer((socket) => {
                                 if (waspResponse) {
 
                                     console.log("Responding.....");
-                                    res.setHeader('Content-Type', 'application/json');
-                                    res.setHeader('X-Foo', 'bar');
-                                    res.writeHead(200, {
-                                        'Content-Type': 'application/json'
-                                    });
-                                    res.end(JSON.stringify(waspToClient));
-                                    //res.status(200).send(waspToClient);
+                                    // res.setHeader('Content-Type', 'application/json');
+                                    // res.setHeader('X-Foo', 'bar');
+                                    // res.writeHead(200, {
+                                    //     'Content-Type': 'application/json'
+                                    // });
+                                    // res.end(JSON.stringify(waspToClient));
+                                    res.send(waspToClient);
 
                                 } else {
 
