@@ -124,6 +124,7 @@ const server = net.createServer((socket) => {
                         if (hasTerminated) {
 
                             socket.on("data", waspResponse => {
+                                res.status(200).send({wasp: waspResponse.toString()});
                                 console.log("Res from wasp");
 
                                 let waspToClient = {
@@ -143,7 +144,7 @@ const server = net.createServer((socket) => {
                                     // });
                                     // res.end(JSON.stringify(waspToClient));
                                     //res.status(200).send(waspToClient);
-                                   
+                                    
 
                                 } else {
 
