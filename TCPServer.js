@@ -97,99 +97,100 @@ const server = net.createServer((socket) => {
 
 
             app.post('/api/v1/option1', (req, res) => {
-                userRequestJob = queue.create('UserRequest', {
-                        msgPDU: req.body.msgPDU
-                    })
-                    .priority(-15).attempts(3).removeOnComplete(true).save()
+                res.send({notinh:"nothin"});
+                // userRequestJob = queue.create('UserRequest', {
+                //         msgPDU: req.body.msgPDU
+                //     })
+                //     .priority(-15).attempts(3).removeOnComplete(true).save()
 
-                console.log('translator body');
-                console.log("Option Endpoint Executed");
-                console.log(req.body.msgPDU);
-                //socket.resume()
-
-
-
-
-                //queing job
-                queue.process('UserRequest', 10, (job, done) => {
-
-                    console.log('Sending the network request')
-                    // socket.write(req.body.msgPDU)
-                    // socket.write(Buffer.from('ff', 'hex'));
-
-                    let hasWritten = socket.write(req.body.msgPDU)
-                    let hasTerminated = socket.write(Buffer.from('ff', 'hex'));
-
-                    if (hasWritten) {
-                        if (hasTerminated) {
-
-                            socket.on("data", waspResponse => {
-                                console.log("Res from wasp");
-
-                                let waspToClient = {
-                                    msgPDU: waspResponse.toString()
-                                }
-                                console.log(waspToClient);
-
-                                //waspMessage = waspResponse;
-
-                                if (waspResponse) {
-
-                                    console.log("Responding.....");
-                                    // res.setHeader('Content-Type', 'application/json');
-                                    // res.setHeader('X-Foo', 'bar');
-                                    // res.writeHead(200, {
-                                    //     'Content-Type': 'application/json'
-                                    // });
-                                    // res.end(JSON.stringify(waspToClient));
-                                    res.send("fg");
-                                    //waspToClient
-
-                                } else {
-
-                                    console.log("Buff not filled");
-
-                                }
-
-                            })
+                // console.log('translator body');
+                // console.log("Option Endpoint Executed");
+                // console.log(req.body.msgPDU);
+                // //socket.resume()
 
 
 
 
+                // //queing job
+                // queue.process('UserRequest', 10, (job, done) => {
 
-                        } else {
+                //     console.log('Sending the network request')
+                //     // socket.write(req.body.msgPDU)
+                //     // socket.write(Buffer.from('ff', 'hex'));
 
-                            console.log("Something Happened");
-                        }
+                //     let hasWritten = socket.write(req.body.msgPDU)
+                //     let hasTerminated = socket.write(Buffer.from('ff', 'hex'));
 
-                    } else {
-                        console.log("Something Happened=======");
-                    }
+                //     if (hasWritten) {
+                //         if (hasTerminated) {
 
-                    done && done()
+                //             socket.on("data", waspResponse => {
+                //                 console.log("Res from wasp");
+
+                //                 let waspToClient = {
+                //                     msgPDU: waspResponse.toString()
+                //                 }
+                //                 console.log(waspToClient);
+
+                //                 //waspMessage = waspResponse;
+
+                //                 if (waspResponse) {
+
+                //                     console.log("Responding.....");
+                //                     // res.setHeader('Content-Type', 'application/json');
+                //                     // res.setHeader('X-Foo', 'bar');
+                //                     // res.writeHead(200, {
+                //                     //     'Content-Type': 'application/json'
+                //                     // });
+                //                     // res.end(JSON.stringify(waspToClient));
+                //                     //res.send("fg");
+                //                     //waspToClient
+
+                //                 } else {
+
+                //                     console.log("Buff not filled");
+
+                //                 }
+
+                //             })
 
 
-                    socket.on('error', (error) => {
-                        hasLoggedIn = false;
-                        console.log('Handled error')
-                        console.log(error)
-                        userRequestJob.on('failed', (errorMessage) => {
-                            console.log(error)
-                            let jobError = JSON.parse(errorMessage)
-                            console.log(errorMessage)
-                        })
 
 
 
-                    })
-                    socket.on('close', () => {
+                //         } else {
 
-                        hasLoggedIn = false;
-                        console.log('session closed')
-                    })
+                //             console.log("Something Happened");
+                //         }
+
+                //     } else {
+                //         console.log("Something Happened=======");
+                //     }
+
+                //     done && done()
 
 
-                })
+                //     socket.on('error', (error) => {
+                //         hasLoggedIn = false;
+                //         console.log('Handled error')
+                //         console.log(error)
+                //         userRequestJob.on('failed', (errorMessage) => {
+                //             console.log(error)
+                //             let jobError = JSON.parse(errorMessage)
+                //             console.log(errorMessage)
+                //         })
+
+
+
+                //     })
+                //     socket.on('close', () => {
+
+                //         hasLoggedIn = false;
+                //         console.log('session closed')
+                //     })
+
+
+                // })
 
 
             })
