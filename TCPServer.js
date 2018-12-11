@@ -92,7 +92,7 @@ const server = net.createServer((socket) => {
             }
 
 
-        } else {
+        } else if(hasLoggedIn == true) {
             console.log("logged == " + hasLoggedIn)
 
 
@@ -125,34 +125,28 @@ const server = net.createServer((socket) => {
 
                             socket.on("data", waspResponse => {
                                 console.log("Res from wasp");
-            
+
                                 let waspToClient = {
                                     msgPDU: waspResponse.toString()
                                 }
                                 console.log(waspToClient);
-                                
-                                waspMessage =  waspResponse;
-                                
-                                if (waspMessage) {
 
-                                    let waspToClient = {
-                                        msgPDU: waspMessage
-                                    }
+                                //waspMessage = waspResponse;
+
+                                if (waspResponse) {
+
                                     console.log("Responding.....");
-                                    res.send(waspToClient);
-                                    
+                                    res.status(200).send(waspToClient);
+
                                 } else {
-    
+
                                     console.log("Buff not filled");
+
                                 }
-                               
-
-
-
 
                             })
 
-                            
+
 
 
 
