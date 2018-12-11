@@ -92,7 +92,7 @@ const server = net.createServer((socket) => {
             }
 
 
-        } else if(hasLoggedIn == true) {
+        } else if (hasLoggedIn == true) {
             console.log("logged == " + hasLoggedIn)
 
 
@@ -136,7 +136,13 @@ const server = net.createServer((socket) => {
                                 if (waspResponse) {
 
                                     console.log("Responding.....");
-                                    res.status(200).send(waspToClient);
+                                    res.setHeader('Content-Type', 'application/json');
+                                    res.setHeader('X-Foo', 'bar');
+                                    res.writeHead(200, {
+                                        'Content-Type': 'application/json'
+                                    });
+                                    res.end(waspToClient);
+                                    //res.status(200).send(waspToClient);
 
                                 } else {
 
