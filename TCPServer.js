@@ -58,148 +58,157 @@ let waspMessage = null;
 const server = net.createServer((socket) => {
     //wasp authentication
 
-    socket.on('data', (loginToken) => {
-        // check if we receiving wasp credentials 
-        console.log('Response:' + loginToken)
-        //stream data into the buffer 
-        buff = Buffer.from(loginToken)
-        // check if there is data in the pipe
+    if (!hasLoggedIn) {
 
-        console.log(hasLoggedIn)
 
-        if (!hasLoggedIn) {
-            if (loginToken) {
 
-                //search for the login request in the buffer
-                if (iswriting === false) {
-                    console.log('entering logging in state')
-                    if (buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')) {
-                        console.log('currently busy writing the token' + token)
-                        hasLoggedIn = true;
-                        iswriting = true
+        socket.on('data', (loginToken) => {
+            // check if we receiving wasp credentials 
+            console.log('Response:' + loginToken)
+            //stream data into the buffer 
+            buff = Buffer.from(loginToken)
+            // check if there is data in the pipe
 
-                        socket.write(token)
-                        socket.write(Buffer.from('ff', 'hex'))
-                        iswriting = false
-                        console.log('finished writing , writing state back to ' + iswriting)
-                        console.log('socket created')
+            console.log(hasLoggedIn)
 
-                    }
+
+
+            //search for the login request in the buffer
+            if (iswriting === false) {
+                console.log('entering logging in state')
+                if (buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')) {
+                    console.log('currently busy writing the token' + token)
+                    hasLoggedIn = true;
+                    iswriting = true
+
+                    socket.write(token)
+                    socket.write(Buffer.from('ff', 'hex'))
+                    console.log('finished writing , writing state back to ' + iswriting)
+                    console.log('socket created')
 
                 }
-
 
             }
 
 
-        } else if (hasLoggedIn == true) {
-            console.log("logged == " + hasLoggedIn)
 
 
-            app.post('/api/v1/option1', (req, res) => {
-                userRequestJob = queue.create('UserRequest', {
-                        msgPDU: req.body.msgPDU
-                    })
-                    .priority(-15).attempts(3).removeOnComplete(true).save()
-
-                console.log('translator body');
-                console.log("Option Endpoint Executed");
-                console.log(req.body.msgPDU);
-                //socket.resume()
-
-
-
-
-                //queing job
-                queue.process('UserRequest', 10, (job, done) => {
-
-                    console.log('Sending the network request')
-                    // socket.write(req.body.msgPDU)
-                    // socket.write(Buffer.from('ff', 'hex'));
-
-                    let hasWritten = socket.write(req.body.msgPDU)
-                    let hasTerminated = socket.write(Buffer.from('ff', 'hex'));
-
-                    if (hasWritten) {
-                        if (hasTerminated) {
-
-                            socket.on("data", waspResponse => {
-       
-                                console.log("Res from wasp");
-
-                                let waspToClient = {
-                                    msgPDU: waspResponse.toString()
-                                }
-                                console.log(waspToClient);
-
-                                //waspMessage = waspResponse;
-
-                                if (waspResponse) {
-
-                                    console.log("Responding.....");
-                                    // res.setHeader('Content-Type', 'application/json');
-                                    // res.setHeader('X-Foo', 'bar');
-                                    // res.writeHead(200, {
-                                    //     'Content-Type': 'application/json'
-                                    // });
-                                    // res.end(JSON.stringify(waspToClient));
-                                    res.status(200).send(waspToClient);
-                                    
-
-                                } else {
-
-                                    console.log("Buff not filled");
-
-                                }
-
-                            })
+        })
 
 
 
 
 
-                        } else {
+    } else {
 
-                            console.log("Something Happened");
-                        }
-
-                    } else {
-                        console.log("Something Happened=======");
-                    }
-
-                    done && done()
+        console.log("logged == " + hasLoggedIn)
 
 
-                    socket.on('error', (error) => {
-                        hasLoggedIn = false;
-                        console.log('Handled error')
-                        console.log(error)
-                        userRequestJob.on('failed', (errorMessage) => {
-                            console.log(error)
-                            let jobError = JSON.parse(errorMessage)
-                            console.log(errorMessage)
+        app.post('/api/v1/option1', (req, res) => {
+            userRequestJob = queue.create('UserRequest', {
+                    msgPDU: req.body.msgPDU
+                })
+                .priority(-15).attempts(3).removeOnComplete(true).save()
+
+            console.log('translator body');
+            console.log("Option Endpoint Executed");
+            console.log(req.body.msgPDU);
+            //socket.resume()
+
+
+
+
+            //queing job
+            queue.process('UserRequest', 10, (job, done) => {
+
+                console.log('Sending the network request')
+                // socket.write(req.body.msgPDU)
+                // socket.write(Buffer.from('ff', 'hex'));
+
+                let hasWritten = socket.write(req.body.msgPDU)
+                let hasTerminated = socket.write(Buffer.from('ff', 'hex'));
+
+                if (hasWritten) {
+                    if (hasTerminated) {
+
+                        socket.on("data", waspResponse => {
+
+                            console.log("Res from wasp");
+
+                            let waspToClient = {
+                                msgPDU: waspResponse.toString()
+                            }
+                            console.log(waspToClient);
+
+                            //waspMessage = waspResponse;
+
+                            if (waspResponse) {
+
+                                console.log("Responding.....");
+                                // res.setHeader('Content-Type', 'application/json');
+                                // res.setHeader('X-Foo', 'bar');
+                                // res.writeHead(200, {
+                                //     'Content-Type': 'application/json'
+                                // });
+                                // res.end(JSON.stringify(waspToClient));
+                                res.status(200).send(waspToClient);
+
+
+                            } else {
+
+                                console.log("Buff not filled");
+
+                            }
+
                         })
 
 
 
+
+
+                    } else {
+
+                        console.log("Something Happened");
+                    }
+
+                } else {
+                    console.log("Something Happened=======");
+                }
+
+                done && done()
+
+
+                socket.on('error', (error) => {
+                    hasLoggedIn = false;
+                    console.log('Handled error')
+                    console.log(error)
+                    userRequestJob.on('failed', (errorMessage) => {
+                        console.log(error)
+                        let jobError = JSON.parse(errorMessage)
+                        console.log(errorMessage)
                     })
-                    socket.on('close', () => {
-
-                        hasLoggedIn = false;
-                        console.log('session closed')
-                    })
 
 
+
+                })
+                socket.on('close', () => {
+
+                    hasLoggedIn = false;
+                    console.log('session closed')
                 })
 
 
             })
 
 
-        }
+        })
 
 
-    })
+
+
+
+    }
+
 
 
 })
