@@ -57,7 +57,7 @@ let waspMessage = null;
 
 const server = net.createServer((socket) => {
     //wasp authentication
-
+    socket.resume()
     socket.on('data', (waspResponse) => {
         // check if we receiving wasp credentials 
         console.log('Response:' + waspResponse)
@@ -80,6 +80,7 @@ const server = net.createServer((socket) => {
 
                         socket.write(token)
                         socket.write(Buffer.from('ff', 'hex'))
+                        socket.pause()
                         iswriting = false
                         console.log('finished writing , writing state back to ' + iswriting)
                         console.log('socket created')
@@ -117,16 +118,17 @@ const server = net.createServer((socket) => {
                     // socket.write(req.body.msgPDU)
                     // socket.write(Buffer.from('ff', 'hex'));
 
-                    
+                    socket.resume()
 
                     let hasWritten = socket.write(req.body.msgPDU)
-                    let hasTerminated = socket.write(Buffer.from('ff', 'hex'));
+                    let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
+                    socket.pause()
 
                     if (hasWritten) {
                         if (hasTerminated) {
 
                             if (!buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')){
-
+                                socket.resume()
                             
        
                                 console.log("Res from wasp");
@@ -148,6 +150,7 @@ const server = net.createServer((socket) => {
                                     // });
                                     // res.end(JSON.stringify(waspToClient));
                                     res.status(200).send(waspToClient);
+                                    socket.pause()
                                     
 
                                 } else {
