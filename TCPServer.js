@@ -58,17 +58,17 @@ let waspMessage = null;
 const server = net.createServer((socket) => {
     //wasp authentication
 
-    socket.on('data', (loginToken) => {
+    socket.on('data', (waspResponse) => {
         // check if we receiving wasp credentials 
         console.log('Response:' + loginToken)
         //stream data into the buffer 
-        buff = Buffer.from(loginToken)
+        buff = Buffer.from(waspResponse)
         // check if there is data in the pipe
 
         console.log(hasLoggedIn)
 
         if (!hasLoggedIn) {
-            if (loginToken) {
+            if (waspResponse) {
 
                 //search for the login request in the buffer
                 if (iswriting === false) {
@@ -125,7 +125,9 @@ const server = net.createServer((socket) => {
                     if (hasWritten) {
                         if (hasTerminated) {
 
-                            socket.on("data", waspResponse => {
+                            if (!buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')){
+
+                            
        
                                 console.log("Res from wasp");
 
@@ -154,7 +156,7 @@ const server = net.createServer((socket) => {
 
                                 }
 
-                            })
+                            }
 
 
 
