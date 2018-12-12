@@ -80,10 +80,11 @@ const server = net.createServer((socket) => {
 
                         socket.write(token)
                         socket.write(Buffer.from('ff', 'hex'))
-                        socket.pause()
+                        
                         iswriting = false
                         console.log('finished writing , writing state back to ' + iswriting)
                         console.log('socket created')
+                        socket.pause()
 
                     }
 
@@ -94,6 +95,7 @@ const server = net.createServer((socket) => {
 
 
         } else if (hasLoggedIn == true) {
+            socket.resume()
             console.log("logged == " + hasLoggedIn)
 
 
@@ -118,7 +120,7 @@ const server = net.createServer((socket) => {
                     // socket.write(req.body.msgPDU)
                     // socket.write(Buffer.from('ff', 'hex'));
 
-                    socket.resume()
+                   
 
                     let hasWritten = socket.write(req.body.msgPDU)
                     let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
