@@ -84,7 +84,7 @@ const server = net.createServer((socket) => {
                         iswriting = false
                         console.log('finished writing , writing state back to ' + iswriting)
                         console.log('socket created')
-                        socket.pause()
+                        // socket.pause()
 
                     }
 
@@ -95,7 +95,7 @@ const server = net.createServer((socket) => {
 
 
         } else if (hasLoggedIn == true) {
-            socket.resume()
+            // socket.resume()
             console.log("logged == " + hasLoggedIn)
 
 
@@ -130,7 +130,7 @@ const server = net.createServer((socket) => {
                         if (hasTerminated) {
 
                             if (!buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')){
-                                socket.resume()
+                                // socket.resume()
                             
        
                                 console.log("Res from wasp");
