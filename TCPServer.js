@@ -60,7 +60,7 @@ const server = net.createServer((socket) => {
 
     socket.on('data', (waspResponse) => {
         // check if we receiving wasp credentials 
-        console.log('Response:' + loginToken)
+        console.log('Response:' + waspResponse)
         //stream data into the buffer 
         buff = Buffer.from(waspResponse)
         // check if there is data in the pipe
