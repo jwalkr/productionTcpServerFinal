@@ -135,12 +135,16 @@ const server = net.createServer((socket) => {
                             
        
                                 console.log("Res from wasp");
+                                
+                                // buff = Buffer.from(waspResponse)
+
 
                                 let waspToClient = {
-                                    msgPDU: waspResponse.toJSON()
+                                    msgPDU: JSON.stringify(waspResponse) 
                                 }
+
                                 console.log(waspToClient);
-                                buff = Buffer.from(waspResponse)
+                              
                                 //waspMessage = waspResponse;
 
                                 if (waspResponse) {
