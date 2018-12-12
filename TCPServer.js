@@ -125,7 +125,7 @@ const server = net.createServer((socket) => {
 
                     let hasWritten = socket.write(req.body.msgPDU)
                     let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
-                    socket.pause()
+                    // socket.pause()
 
                     if (hasWritten) {
                         if (hasTerminated) {
@@ -137,10 +137,10 @@ const server = net.createServer((socket) => {
                                 console.log("Res from wasp");
 
                                 let waspToClient = {
-                                    msgPDU: waspResponse.toString()
+                                    msgPDU: waspResponse.toJSON()
                                 }
                                 console.log(waspToClient);
-
+                                buff = Buffer.from(waspResponse)
                                 //waspMessage = waspResponse;
 
                                 if (waspResponse) {
