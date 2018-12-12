@@ -10,6 +10,23 @@ const app = express();
 app.use(bodyParser.json());
 
 
+//adding the job queing 
+const kue = require('kue')
+//job monitoring interface
+const kueUiExpress = require('kue-ui-express')
+
+kueUiExpress(app, '/kue/', '/kue-api')
+let queue = kue.createQueue()
+
+//mount kue json api
+//app.use('/kue-api/', kue.app)
+// app.listen(PORT, () => {
+//     console.log(`server running on port ${PORT}`)
+// });
+
+
+
+
 //Server Endpoint
 const portExpress = 4200
 
@@ -30,118 +47,202 @@ const token = '<?xml version="1.0" encoding="ISO-8859-1"?> <cookie VALUE="UXCKB1
 var HOST = process.env.HOST || '127.0.0.1';
 var PORT = process.env.PORT || 8000;
 
+let dataRespond;
+let userRequestJob = null
+
 let hasLoggedIn = false;
+let iswriting = false
+
+let waspMessage = null;
+
+let waspMessageResponse = null;
 
 
 const server = net.createServer((socket) => {
-
-
     //wasp authentication
 
+    socket.on('data', (loginToken) => {
+        // check if we receiving wasp credentials 
+        console.log('Response:' + loginToken)
+        //stream data into the buffer 
+        buff = Buffer.from(loginToken)
+        // check if there is data in the pipe
 
-    if (!hasLoggedIn) {
+        console.log(hasLoggedIn)
 
-        socket.on('data', (loginToken) => {
+        if (!hasLoggedIn) {
+            if (loginToken) {
 
-            console.log('Response:' + loginToken)
-            //stream data into the buffer 
-            buff = Buffer.from(loginToken)
+                //search for the login request in the buffer
+                if (iswriting === false) {
+                    console.log('entering logging in state')
+                    if (buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')) {
+                        console.log('currently busy writing the token' + token)
+                        hasLoggedIn = true;
+                        iswriting = true
 
+                        socket.write(token)
+                        socket.write(Buffer.from('ff', 'hex'))
+                        iswriting = false
+                        console.log('finished writing , writing state back to ' + iswriting)
+                        console.log('socket created')
 
+                    }
 
-            console.log('Loggin IN')
-            if (buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')) {
-                console.log('writing the token' + token)
-                hasLoggedIn = true;
-
-                socket.write(token)
-                socket.write(Buffer.from('ff', 'hex'))
+                }
 
 
             }
 
 
+        } else if (hasLoggedIn == true) {
+            console.log("logged == " + hasLoggedIn)
 
 
-        })
+            app.post('/api/v1/option1', (req, res) => {
+                userRequestJob = queue.create('UserRequest', {
+                        msgPDU: req.body.msgPDU
+                    })
+                    .priority(-15).attempts(3).removeOnComplete(true).save()
+
+                console.log('translator body');
+                console.log("Option Endpoint Executed");
+                console.log(req.body.msgPDU);
+                //socket.resume()
 
 
 
-    } else {
 
-        console.log("Is logged =  " + hasLoggedIn)
+                //queing job
+                queue.process('UserRequest', 10, (job, done) => {
 
-
-        app.post('/api/v1/option1', (req, res) => {
-
-            console.log('translator body');
-            console.log(req.body.msgPDU);
-            //socket.resume()
+                    console.log('Sending the network request')
+                    // socket.write(req.body.msgPDU)
+                    // socket.write(Buffer.from('ff', 'hex'));
 
 
-            console.log('Sending the network request')
-            socket.write(req.body.msgPDU)
-            socket.write(Buffer.from('ff', 'hex'));
 
-            socket.on("data", pduMessages => {
+                    let hasWritten = socket.write(req.body.msgPDU)
+                    let hasTerminated = socket.write(Buffer.from('ff', 'hex'));
 
-                console.log("Sending ....response ....");
-                console.log(pduMessages.toString());
-                res.status(200).send({
-                    success: 'true',
-                    message: 'PDU Sent',
-                    body: pduMessages.toString()
+                    if (hasWritten) {
+                        if (hasTerminated) {
+
+                            socket.on("data", waspResponse => {
+       
+                                console.log("Res from wasp");
+
+                                let waspToClient = {
+                                    msgPDU: waspResponse.toString()
+                                }
+                                console.log(waspToClient);
+
+                                //waspMessage = waspResponse;
+
+                                if (waspResponse) {
+
+                                    console.log("Responding.....");
+                                    // res.setHeader('Content-Type', 'application/json');
+                                    // res.setHeader('X-Foo', 'bar');
+                                    // res.writeHead(200, {
+                                    //     'Content-Type': 'application/json'
+                                    // });
+                                    // res.end(JSON.stringify(waspToClient));
+                                    res.status(200).send(waspToClient);
+                                    
+                                    
+
+                                } else {
+
+                                    console.log("Buff not filled");
+
+                                }
+
+                            })
+
+
+
+
+                        } else {
+
+                            console.log("Something Happened");
+                        }
+
+                    } else {
+                        console.log("Something Happened=======");
+                    }
+
+                    done && done()
+
+
+                    socket.on('error', (error) => {
+                        hasLoggedIn = false;
+                        console.log('Handled error')
+                        console.log(error)
+                        userRequestJob.on('failed', (errorMessage) => {
+                            console.log(error)
+                            let jobError = JSON.parse(errorMessage)
+                            console.log(errorMessage)
+                        })
+
+
+
+                    })
+                    socket.on('close', () => {
+
+                        hasLoggedIn = false;
+                        console.log('session closed')
+                    })
+
 
                 })
 
+
             })
 
 
-
-            
-
-
-            socket.on('error', (error) => {
-                hasLoggedIn = false;
-                console.log('Error occured')
-                console.log(error)
- 
-            })
-            socket.on('close', () => {
-
-                hasLoggedIn = false;
-                console.log('On close')
-            })
+        }
 
 
-
-
-        })
-
-
-        //Execute if states are not met 
-        // socket.on('error', (error) => {
-        //     hasLoggedIn = false;
-        //     console.log('Error occured out of state')
-        //     console.log(error)
-
-        // })
-        // socket.on('close', () => {
-
-        //     hasLoggedIn = false;
-        //     console.log('On close out of state')
-        // })
-
-
-
-
-    }
-
-
-   
+    })
 
 
 })
+
+//A function to write to the wasp
+function onWriteToWasp(socket) {
+
+    let promise = new Promise((resolve, reject) => {
+
+        let hasWritten = socket.write(req.body.msgPDU)
+        let hasTerminated = socket.write(Buffer.from('ff', 'hex'));
+
+        if (hasWritten) {
+            if (hasTerminated) {
+                let result = {
+                    executed: true
+                }
+                resolve(result);
+
+            } else {
+                let result = {
+                    executed: false
+                }
+                reject(result);
+            }
+
+        } else {
+            let result = {
+                executed: false
+            }
+            reject(result);
+        }
+
+    })
+
+    return promise;
+
+}
 
 server.listen(PORT, HOST)
 
@@ -233,4 +334,4 @@ server.listen(PORT, HOST)
 
 // }).listen(PORT,HOST)
 
-// }
+// console.log("Server listening on "+HOST+":"+PORT);

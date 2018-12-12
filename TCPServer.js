@@ -55,6 +55,9 @@ let iswriting = false
 
 let waspMessage = null;
 
+let waspMessageResponse = null;
+
+
 const server = net.createServer((socket) => {
     //wasp authentication
 
@@ -117,7 +120,7 @@ const server = net.createServer((socket) => {
                     // socket.write(req.body.msgPDU)
                     // socket.write(Buffer.from('ff', 'hex'));
 
-                    
+
 
                     let hasWritten = socket.write(req.body.msgPDU)
                     let hasTerminated = socket.write(Buffer.from('ff', 'hex'));
@@ -147,6 +150,7 @@ const server = net.createServer((socket) => {
                                     // res.end(JSON.stringify(waspToClient));
                                     res.status(200).send(waspToClient);
                                     
+                                    
 
                                 } else {
 
@@ -155,7 +159,6 @@ const server = net.createServer((socket) => {
                                 }
 
                             })
-
 
 
 
