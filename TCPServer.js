@@ -129,7 +129,7 @@ const server = net.createServer((socket) => {
                     if (hasWritten) {
                         if (hasTerminated) {
 
-                            if (!buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')){
+                            if (buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>' != true)){
                                 // socket.resume()
                             
        
