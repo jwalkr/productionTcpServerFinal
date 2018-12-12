@@ -117,6 +117,8 @@ const server = net.createServer((socket) => {
                     // socket.write(req.body.msgPDU)
                     // socket.write(Buffer.from('ff', 'hex'));
 
+                    
+
                     let hasWritten = socket.write(req.body.msgPDU)
                     let hasTerminated = socket.write(Buffer.from('ff', 'hex'));
 
