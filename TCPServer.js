@@ -140,7 +140,7 @@ const server = net.createServer((socket) => {
 
 
                                 let waspToClient = {
-                                    msgPDU: JSON.stringify(waspResponse) 
+                                    msgPDU: JSON.stringify(waspResponse).toString('utf8')
                                 }
 
                                 console.log(waspToClient);
