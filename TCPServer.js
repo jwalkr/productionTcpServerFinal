@@ -136,11 +136,11 @@ const server = net.createServer((socket) => {
        
                                 console.log("Res from wasp");
                                 
-                                // buff = Buffer.from(waspResponse)
+                                buff = Buffer.from(waspResponse)
 
 
                                 let waspToClient = {
-                                    msgPDU: JSON.stringify(waspResponse).toString('utf8')
+                                    msgPDU: buff.toString('utf8')
                                 }
 
                                 console.log(waspToClient);
