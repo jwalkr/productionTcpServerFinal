@@ -64,6 +64,7 @@ const server = net.createServer((socket) => {
         //stream data into the buffer 
         buff = Buffer.from(waspResponse)
         // check if there is data in the pipe
+        console.log('Response:' + buff)
 
         console.log(hasLoggedIn)
 
@@ -129,7 +130,7 @@ const server = net.createServer((socket) => {
                     if (hasWritten) {
                         if (hasTerminated) {
 
-                            if (buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>' != true)){
+                            if (buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>' !== true)){
                                 // socket.resume()
                             
        
