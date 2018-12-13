@@ -130,9 +130,7 @@ const server = net.createServer((socket) => {
                     //let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
                     //socket.pause()
 
-                    if (hasWritten) {
-                        if (hasTerminated) {
-                            
+                  
 
                             onWritwData(socket,req.body.msgPDU)
                             .then(menu =>{
@@ -216,17 +214,6 @@ const server = net.createServer((socket) => {
                             // }
 
 
-
-
-
-                        } else {
-
-                            console.log("Something Happened");
-                        }
-
-                    } else {
-                        console.log("Something Happened=======");
-                    }
 
                     done && done()
 
