@@ -134,22 +134,20 @@ const server = net.createServer((socket) => {
                         if (hasTerminated) {
                             
 
-                            socket.on("data", waspInfo =>{
+                            onWritwData(socket)
+                            .then(menu =>{
 
-                                toClientMessagePDU = waspInfo;
- 
-                            })
-
-                            console.log("Extracting Information");
-                            console.log("wasp INFO========");
-                            console.log(toClientMessagePDU.toString());
-                            console.log(toClientMessagePDU.toString().search('<ussd'));
-                            if(toClientMessagePDU.toString().search('<ussd')> 0)
+                                console.log("Extracting Information");
+                                console.log("wasp INFO========");
+                                console.log(menu.toString());
+                                console.log(menu.toString().search('<ussd'));
+                                
+                            if(menu.toString().search('<ussd')> 0)
                             {
 
 
                             let waspToClient = {
-                                msgPDU: toClientMessagePDU.toString()
+                                msgPDU: menu.toString()
                             }
                             console.log(waspToClient);
 
@@ -174,6 +172,14 @@ const server = net.createServer((socket) => {
 
 
                             }
+
+
+                            }).catch(error =>{
+
+                                console.log(error);
+                            })
+
+                            
 
                             // if (buff.toString().search('<ussd ENCODING="" MSISDN="27788425401" PDU="USSRR" REQID="" STATUS="" STRING="#wegotyou1) Airtime &#xa;2) Data &#xa;3) Social Bundles&#xa;4) Call Center&#xa;0) Exit&#xa;?" TARIFF="" TID="">' === true)){
                             //     // socket.resume()
@@ -258,6 +264,31 @@ const server = net.createServer((socket) => {
 
 
 })
+
+//A function to Send data to the request 
+
+function onWritwData(socket)
+{
+    let promise = new Promise((resolve, reject)=>{
+
+        socket.on("data", waspInfo =>{
+
+            if(waspInfo)
+            {
+                resolve({menu: waspInfo});
+
+            }else{
+                reject({menu:"Not found"})
+            }
+
+        })
+
+    })
+
+    return promise;
+
+
+}
 
 //A function to write to the wasp
 function onWriteToWasp(socket) {
