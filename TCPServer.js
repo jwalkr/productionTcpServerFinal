@@ -137,23 +137,18 @@ const server = net.createServer((socket) => {
                                 console.log("wasp INFO========");
                                 console.log(waspInfo.toString());
                                 console.log(waspInfo.toString().search('<ussd'));
-                            })
+                                if(waspInfo.toString().search('<ussd')> 0)
+                                {
 
-                            if (buff.toString().search('<ussd ENCODING="" MSISDN="27788425401" PDU="USSRR" REQID="" STATUS="" STRING="#wegotyou1) Airtime &#xa;2) Data &#xa;3) Social Bundles&#xa;4) Call Center&#xa;0) Exit&#xa;?" TARIFF="" TID="">' === true)){
-                                // socket.resume()
-                            
-       
-                                console.log("Res from wasp");
 
                                 let waspToClient = {
-                                    msgPDU: waspResponse.toString()
+                                    msgPDU: waspInfo.toString()
                                 }
                                 console.log(waspToClient);
 
                                 //waspMessage = waspResponse;
 
-                                if (waspResponse) {
-
+                               
                                     console.log("Responding.....");
                                     // res.setHeader('Content-Type', 'application/json');
                                     // res.setHeader('X-Foo', 'bar');
@@ -161,7 +156,7 @@ const server = net.createServer((socket) => {
                                     //     'Content-Type': 'application/json'
                                     // });
                                     // res.end(JSON.stringify(waspToClient));
-                                    res.status(200).send(waspToClient);
+                                    res.status(200).send(waspInfo);
                                     //socket.pause()
                                     
 
@@ -169,9 +164,44 @@ const server = net.createServer((socket) => {
 
                                     console.log("Buff not filled");
 
-                                }
 
-                            }
+
+                                }
+                            })
+
+                            // if (buff.toString().search('<ussd ENCODING="" MSISDN="27788425401" PDU="USSRR" REQID="" STATUS="" STRING="#wegotyou1) Airtime &#xa;2) Data &#xa;3) Social Bundles&#xa;4) Call Center&#xa;0) Exit&#xa;?" TARIFF="" TID="">' === true)){
+                            //     // socket.resume()
+                            
+       
+                            //     console.log("Res from wasp");
+
+                            //     let waspToClient = {
+                            //         msgPDU: waspResponse.toString()
+                            //     }
+                            //     console.log(waspToClient);
+
+                            //     //waspMessage = waspResponse;
+
+                            //     if (waspResponse) {
+
+                            //         console.log("Responding.....");
+                            //         // res.setHeader('Content-Type', 'application/json');
+                            //         // res.setHeader('X-Foo', 'bar');
+                            //         // res.writeHead(200, {
+                            //         //     'Content-Type': 'application/json'
+                            //         // });
+                            //         // res.end(JSON.stringify(waspToClient));
+                            //         res.status(200).send(waspToClient);
+                            //         //socket.pause()
+                                    
+
+                            //     } else {
+
+                            //         console.log("Buff not filled");
+
+                            //     }
+
+                            // }
 
 
 
