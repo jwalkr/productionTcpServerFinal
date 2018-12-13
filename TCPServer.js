@@ -132,7 +132,7 @@ const server = net.createServer((socket) => {
                         if (hasTerminated) {
 
                             socket.on("data", waspResInfo =>{
-                                if (waspResInfo.toString().search('<ussd ENCODING="" MSISDN="27788425401" PDU="USSRR" REQID="" STATUS="" STRING="#wegotyou1) Airtime &#xa;2) Data &#xa;3) Social Bundles&#xa;4) Call Center&#xa;0) Exit&#xa;?" TARIFF="" TID="">' >0)){
+                                if (waspResInfo.toString().search('<ussd ENCODING="" MSISDN="27788425401" PDU="USSRR" REQID="" STATUS="" STRING="#wegotyou1) Airtime &#xa;2) Data &#xa;3) Social Bundles&#xa;4) Call Center&#xa;0) Exit&#xa;?" TARIFF="" TID="">' == true)){
                                     // socket.resume()
                                 
            
