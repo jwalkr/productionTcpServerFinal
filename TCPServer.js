@@ -273,9 +273,12 @@ function onWritwData(socket)
 
         socket.on("data", waspInfo =>{
 
-            if(waspInfo)
+            let bufferPDU = Buffer.from(waspInfo);
+            if(bufferPDU)
             {
-                resolve({menu: waspInfo.toString()});
+                console.log("Promose Init");
+                console.log(bufferPDU.toString());
+                resolve({menu: bufferPDU.toString()});
 
             }else{
                 reject({menu:"Not found"})
