@@ -57,7 +57,7 @@ let waspMessage = null;
 
 const server = net.createServer((socket) => {
     //wasp authentication
-    socket.resume()
+    //socket.resume()
     socket.on('data', (waspResponse) => {
         // check if we receiving wasp credentials 
         console.log('Response:' + waspResponse)
@@ -161,7 +161,7 @@ const server = net.createServer((socket) => {
                                     // });
                                     // res.end(JSON.stringify(waspToClient));
                                     res.status(200).send(waspToClient);
-                                    socket.pause()
+                                    //socket.pause()
                                     
 
                                 } else {
