@@ -126,15 +126,15 @@ const server = net.createServer((socket) => {
 
                    
 
-                    let hasWritten = socket.write(req.body.msgPDU)
-                    let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
+                    //let hasWritten = socket.write(req.body.msgPDU)
+                    //let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
                     //socket.pause()
 
                     if (hasWritten) {
                         if (hasTerminated) {
                             
 
-                            onWritwData(socket)
+                            onWritwData(socket,req.body.msgPDU)
                             .then(menu =>{
 
                                 console.log("Extracting Information");
@@ -267,24 +267,39 @@ const server = net.createServer((socket) => {
 
 //A function to Send data to the request 
 
-function onWritwData(socket)
+function onWritwData(socket,PDU)
 {
     let promise = new Promise((resolve, reject)=>{
 
-        socket.on("data", waspInfo =>{
-
-            let bufferPDU = Buffer.from(waspInfo);
-            if(bufferPDU)
+        let hasWritten = socket.write(PDU)
+        let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
+        if(hasWritten)
+        {
+            if(hasTerminated)
             {
-                console.log("Promise Init");
-                console.log(bufferPDU.toString());
-                resolve(bufferPDU.toString());
 
-            }else{
-                reject("Not found")
+                socket.on("data", waspInfo =>{
+
+                    let bufferPDU = Buffer.from(waspInfo);
+                    if(bufferPDU)
+                    {
+                        console.log("Promise Init");
+                        console.log(bufferPDU.toString());
+                        resolve(bufferPDU.toString());
+        
+                    }else{
+                        reject("Not found")
+                    }
+        
+                })
+
+
+
             }
 
-        })
+
+        }
+       
 
     })
 
