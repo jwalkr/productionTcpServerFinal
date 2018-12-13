@@ -62,7 +62,7 @@ const server = net.createServer((socket) => {
         // check if we receiving wasp credentials 
         console.log('Response:' + waspResponse)
         //stream data into the buffer 
-        buff = Buffer.from(waspResponse)
+        buff = new Buffer(waspResponse)
         // check if there is data in the pipe
         console.log('Response:' + buff.toString())
 
@@ -85,7 +85,7 @@ const server = net.createServer((socket) => {
                         iswriting = false
                         console.log('finished writing , writing state back to ' + iswriting)
                         console.log('socket created')
-                        buff = Buffer.clear()
+                        // buff = Buffer.clear()
                         // socket.pause()
 
                     }
