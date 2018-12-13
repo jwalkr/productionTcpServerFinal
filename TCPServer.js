@@ -142,7 +142,7 @@ const server = net.createServer((socket) => {
                                 console.log(menu.menu);
                                 // console.log(menu.toString().search('<ussd'));
                                 
-                            if(menu.toString().search('<ussd')> 0)
+                            if(menu.menu.toString().search('<ussd')> 0)
                             {
 
 
