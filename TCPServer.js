@@ -64,7 +64,7 @@ const server = net.createServer((socket) => {
         //stream data into the buffer 
         buff = Buffer.from(waspResponse)
         // check if there is data in the pipe
-        console.log('Response:' + buff)
+        console.log('Response:' + buff.toString())
 
         console.log(hasLoggedIn)
 
@@ -85,6 +85,7 @@ const server = net.createServer((socket) => {
                         iswriting = false
                         console.log('finished writing , writing state back to ' + iswriting)
                         console.log('socket created')
+                        buff = Buffer.clear()
                         // socket.pause()
 
                     }
@@ -125,26 +126,22 @@ const server = net.createServer((socket) => {
 
                     let hasWritten = socket.write(req.body.msgPDU)
                     let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
-                    // socket.pause()
+                    socket.pause()
 
                     if (hasWritten) {
                         if (hasTerminated) {
 
-                            
+                            if (buff.toString().search('<ussd ENCODING="" MSISDN="27788425401" PDU="USSRR" REQID="" STATUS="" STRING="#wegotyou1) Airtime &#xa;2) Data &#xa;3) Social Bundles&#xa;4) Call Center&#xa;0) Exit&#xa;?" TARIFF="" TID="">' === true)){
                                 // socket.resume()
                             
        
                                 console.log("Res from wasp");
-                                
-                                buff = Buffer.from(waspResponse)
-
 
                                 let waspToClient = {
-                                    msgPDU: buff.toString()
+                                    msgPDU: waspResponse.toString()
                                 }
-
                                 console.log(waspToClient);
-                              
+
                                 //waspMessage = waspResponse;
 
                                 if (waspResponse) {
@@ -166,7 +163,7 @@ const server = net.createServer((socket) => {
 
                                 }
 
-   
+                            }
 
 
 
