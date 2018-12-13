@@ -55,23 +55,21 @@ let iswriting = false
 
 let waspMessage = null;
 
-let waspMessageResponse = null;
-
-
 const server = net.createServer((socket) => {
     //wasp authentication
-
-    socket.on('data', (loginToken) => {
+    socket.resume()
+    socket.on('data', (waspResponse) => {
         // check if we receiving wasp credentials 
-        console.log('Response:' + loginToken)
+        console.log('Response:' + waspResponse)
         //stream data into the buffer 
-        buff = Buffer.from(loginToken)
+        buff = Buffer.from(waspResponse)
         // check if there is data in the pipe
+        console.log('Response:' + buff)
 
         console.log(hasLoggedIn)
 
         if (!hasLoggedIn) {
-            if (loginToken) {
+            if (waspResponse) {
 
                 //search for the login request in the buffer
                 if (iswriting === false) {
@@ -83,9 +81,11 @@ const server = net.createServer((socket) => {
 
                         socket.write(token)
                         socket.write(Buffer.from('ff', 'hex'))
+                        
                         iswriting = false
                         console.log('finished writing , writing state back to ' + iswriting)
                         console.log('socket created')
+                        // socket.pause()
 
                     }
 
@@ -96,6 +96,7 @@ const server = net.createServer((socket) => {
 
 
         } else if (hasLoggedIn == true) {
+            // socket.resume()
             console.log("logged == " + hasLoggedIn)
 
 
@@ -120,15 +121,18 @@ const server = net.createServer((socket) => {
                     // socket.write(req.body.msgPDU)
                     // socket.write(Buffer.from('ff', 'hex'));
 
-
+                   
 
                     let hasWritten = socket.write(req.body.msgPDU)
-                    let hasTerminated = socket.write(Buffer.from('ff', 'hex'));
+                    let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
+                    socket.pause()
 
                     if (hasWritten) {
                         if (hasTerminated) {
 
-                            socket.on("data", waspResponse => {
+                            if (buff.toString().search('<ussd ENCODING="" MSISDN="27788425401" PDU="USSRR" REQID="" STATUS="" STRING="#wegotyou1) Airtime &#xa;2) Data &#xa;3) Social Bundles&#xa;4) Call Center&#xa;0) Exit&#xa;?" TARIFF="" TID="">' === true)){
+                                // socket.resume()
+                            
        
                                 console.log("Res from wasp");
 
@@ -149,7 +153,7 @@ const server = net.createServer((socket) => {
                                     // });
                                     // res.end(JSON.stringify(waspToClient));
                                     res.status(200).send(waspToClient);
-                                    
+                                    socket.pause()
                                     
 
                                 } else {
@@ -158,7 +162,8 @@ const server = net.createServer((socket) => {
 
                                 }
 
-                            })
+                            }
+
 
 
 

@@ -55,47 +55,50 @@ let iswriting = false
 
 let waspMessage = null;
 
-let waspMessageResponse = null;
-
-
 const server = net.createServer((socket) => {
     //wasp authentication
-
-    socket.on('data', (loginToken) => {
+    socket.resume()
+    socket.on('data', (waspResponse) => {
+        socket.resume();
         // check if we receiving wasp credentials 
-        console.log('Response:' + loginToken)
+        //console.log('Response:' + waspResponse)
         //stream data into the buffer 
-        buff = Buffer.from(loginToken)
-        // check if there is data in the pipe
+        buff = Buffer.from(waspResponse)
 
-        console.log(hasLoggedIn)
+        console.log(waspResponse.toString());
 
         if (!hasLoggedIn) {
-            if (loginToken) {
 
-                //search for the login request in the buffer
-                if (iswriting === false) {
-                    console.log('entering logging in state')
-                    if (buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')) {
-                        console.log('currently busy writing the token' + token)
-                        hasLoggedIn = true;
-                        iswriting = true
+            //search for the login request in the buffer
+            if (iswriting === false) {
+                var debug_msg = buff.toString();
+                console.log(debug_msg);
+                console.log('entering logging in state')
+                
+                if (buff.toString().search(`<login COOKIE="ussdgw" NODE_ID="TEST_USER" PASSWORD="testp@55" RMT_SYS="uxml@localhost" USER="TEST_USER"/>`) > 0) {
 
-                        socket.write(token)
-                        socket.write(Buffer.from('ff', 'hex'))
-                        iswriting = false
-                        console.log('finished writing , writing state back to ' + iswriting)
-                        console.log('socket created')
+                    console.log("====================");
+                    console.log(buff.toString());
+                    console.log(buff.toString().search(`<login COOKIE="ussdgw" NODE_ID="TEST_USER" PASSWORD="testp@55" RMT_SYS="uxml@localhost" USER="TEST_USER"/>`));
+                    console.log('currently busy writing the token' + token)
+                    hasLoggedIn = true;
+                    iswriting = true
 
-                    }
+                    socket.write(token)
+                    socket.write(Buffer.from('ff', 'hex'))
+
+                    console.log('socket created')
+                    // socket.pause()
 
                 }
-
 
             }
 
 
+
+
         } else if (hasLoggedIn == true) {
+            // socket.resume()
             console.log("logged == " + hasLoggedIn)
 
 
@@ -123,23 +126,25 @@ const server = net.createServer((socket) => {
 
 
                     let hasWritten = socket.write(req.body.msgPDU)
-                    let hasTerminated = socket.write(Buffer.from('ff', 'hex'));
+                    let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
 
                     if (hasWritten) {
                         if (hasTerminated) {
 
-                            socket.on("data", waspResponse => {
-       
+
+                            socket.on("data", waspInfo => {
+
+
                                 console.log("Res from wasp");
 
                                 let waspToClient = {
-                                    msgPDU: waspResponse.toString()
+                                    msgPDU: waspInfo.toString()
                                 }
                                 console.log(waspToClient);
 
                                 //waspMessage = waspResponse;
 
-                                if (waspResponse) {
+                                if (waspInfo) {
 
                                     console.log("Responding.....");
                                     // res.setHeader('Content-Type', 'application/json');
@@ -148,9 +153,9 @@ const server = net.createServer((socket) => {
                                     //     'Content-Type': 'application/json'
                                     // });
                                     // res.end(JSON.stringify(waspToClient));
-                                    res.status(200).send(waspToClient);
-                                    
-                                    
+                                    //res.status(200).send(waspToClient);
+                                    //socket.pause()
+
 
                                 } else {
 
@@ -158,7 +163,14 @@ const server = net.createServer((socket) => {
 
                                 }
 
+
+
                             })
+
+
+
+
+
 
 
 
