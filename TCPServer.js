@@ -59,7 +59,7 @@ let toClientMessagePDU = null;
 
 const server = net.createServer((socket) => {
     //wasp authentication
-    //socket.resume()
+    socket.resume()
     socket.on('data', (waspResponse) => {
         // check if we receiving wasp credentials 
         console.log('Response:' + waspResponse)
@@ -280,6 +280,7 @@ function onWritwData(socket,pdu)
                 console.log("Promise Init");
                 console.log(bufferPDU.toString());
                 resolve(bufferPDU.toString());
+                socket.pause();
 
             }else{
                 reject("Not found")
