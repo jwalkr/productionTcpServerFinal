@@ -139,7 +139,7 @@ const server = net.createServer((socket) => {
 
                                 console.log("Extracting Information");
                                 console.log("wasp INFO========");
-                                console.log(menu);
+                                console.log(menu.toString("utf8"));
                                 // console.log(menu.toString().search('<ussd'));
                                 
                             if(menu.toString().search('<ussd')> 0)
