@@ -62,7 +62,7 @@ const server = net.createServer((socket) => {
         // check if we receiving wasp credentials 
         console.log('Response:' + waspResponse)
         //stream data into the buffer 
-        buff = new Buffer(waspResponse)
+        buff =  Buffer.from(waspResponse)
         // check if there is data in the pipe
         console.log('Response:' + buff.toString())
 
@@ -145,7 +145,7 @@ const server = net.createServer((socket) => {
                                 console.log("Res from wasp");
 
                                 let waspToClient = {
-                                    msgPDU: buff.toString()
+                                    msgPDU: waspResponse.toString()
                                 }
                                 console.log(waspToClient);
 
