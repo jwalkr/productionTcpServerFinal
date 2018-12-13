@@ -137,41 +137,51 @@ const server = net.createServer((socket) => {
                             onWritwData(socket)
                             .then((menu) =>{
 
-                                console.log("Extracting Information");
-                                console.log("wasp INFO========");
-                                console.log(menu);
-                                // console.log(menu.toString().search('<ussd'));
-                                
-                            if(menu.toString().search('<ussd') > 0)
-                            {
+                               if(menu != null)
+                               {
+
+                                    console.log("Extracting Information");
+                                    console.log("wasp INFO========");
+                                    console.log(menu);
+                                    // console.log(menu.toString().search('<ussd'));
+                                    
+                                if(menu.toString().search('<ussd') > 0)
+                                {
 
 
-                            let waspToClient = {
-                                msgPDU: menu.toString()
-                            }
-                            console.log(waspToClient);
+                                let waspToClient = {
+                                    msgPDU: menu.toString()
+                                }
+                                console.log(waspToClient);
 
-                            //waspMessage = waspResponse;
+                                //waspMessage = waspResponse;
 
-                           
-                                console.log("Responding.....");
-                                // res.setHeader('Content-Type', 'application/json');
-                                // res.setHeader('X-Foo', 'bar');
-                                // res.writeHead(200, {
-                                //     'Content-Type': 'application/json'
-                                // });
-                                // res.end(JSON.stringify(waspToClient));
-                                res.status(200).send(waspToClient);
-                                //socket.pause()
-                                
+                            
+                                    console.log("Responding.....");
+                                    // res.setHeader('Content-Type', 'application/json');
+                                    // res.setHeader('X-Foo', 'bar');
+                                    // res.writeHead(200, {
+                                    //     'Content-Type': 'application/json'
+                                    // });
+                                    // res.end(JSON.stringify(waspToClient));
+                                    res.status(200).send(waspToClient);
+                                    //socket.pause()
+                                    
 
-                            } else {
+                                } else {
 
-                                console.log("Buff not filled");
+                                    console.log("Buff not filled");
 
 
 
-                            }
+                                }
+
+
+                               }else{
+
+                                console.log("Data not loaded yet...");
+
+                               }
 
 
                             }).catch(error =>{
