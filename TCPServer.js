@@ -135,9 +135,9 @@ const server = net.createServer((socket) => {
                             //socket.on("data", waspInfo =>{
 
                                 console.log("wasp INFO========");
-                                console.log(waspInfo.toString());
-                                console.log(waspInfo.toString().search('<ussd'));
-                                if(waspInfo.toString().search('<ussd')> 0)
+                                console.log(waspResponse.toString());
+                                console.log(waspResponse.toString().search('<ussd'));
+                                if(waspResponse.toString().search('<ussd')> 0)
                                 {
 
 
