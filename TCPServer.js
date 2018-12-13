@@ -126,15 +126,13 @@ const server = net.createServer((socket) => {
 
                    
 
-                    let hasWritten = socket.write(req.body.msgPDU)
-                    let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
+                    // let hasWritten = socket.write(req.body.msgPDU)
+                    // let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
                     //socket.pause()
 
-                    if (hasWritten) {
-                        if (hasTerminated) {
-                            
+                  
 
-                            onWritwData(socket)
+                            onWritwData(socket,req.body.msgPDU)
                             .then((menu) =>{
 
                                if(menu != null)
@@ -229,15 +227,6 @@ const server = net.createServer((socket) => {
 
 
 
-                        } else {
-
-                            console.log("Something Happened");
-                        }
-
-                    } else {
-                        console.log("Something Happened=======");
-                    }
-
                     done && done()
 
 
@@ -277,8 +266,10 @@ const server = net.createServer((socket) => {
 
 //A function to Send data to the request 
 
-function onWritwData(socket)
+function onWritwData(socket,pdu)
 {
+    let hasWritten = socket.write(pdu)
+ let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
     let promise = new Promise((resolve, reject)=>{
 
         socket.on("data", waspInfo =>{
