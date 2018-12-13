@@ -138,7 +138,7 @@ const server = net.createServer((socket) => {
                                 console.log("Res from wasp");
 
                                 let waspToClient = {
-                                    msgPDU: waspResponse.toString()
+                                    msgPDU: buff.toString()
                                 }
                                 console.log(waspToClient);
 
