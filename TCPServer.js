@@ -135,14 +135,14 @@ const server = net.createServer((socket) => {
                             
 
                             onWritwData(socket)
-                            .then(menu =>{
+                            .then((menu) =>{
 
                                 console.log("Extracting Information");
                                 console.log("wasp INFO========");
                                 console.log(menu);
                                 // console.log(menu.toString().search('<ussd'));
                                 
-                            if(menu.toString().search('<ussd')> 0)
+                            if(menu.toString().search('<ussd') > 0)
                             {
 
 
