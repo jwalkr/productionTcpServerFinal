@@ -126,13 +126,15 @@ const server = net.createServer((socket) => {
 
                    
 
-                    //let hasWritten = socket.write(req.body.msgPDU)
-                    //let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
+                    let hasWritten = socket.write(req.body.msgPDU)
+                    let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
                     //socket.pause()
 
-                  
+                    if (hasWritten) {
+                        if (hasTerminated) {
+                            
 
-                            onWritwData(socket,req.body.msgPDU)
+                            onWritwData(socket)
                             .then(menu =>{
 
                                 console.log("Extracting Information");
@@ -215,6 +217,17 @@ const server = net.createServer((socket) => {
 
 
 
+
+
+                        } else {
+
+                            console.log("Something Happened");
+                        }
+
+                    } else {
+                        console.log("Something Happened=======");
+                    }
+
                     done && done()
 
 
@@ -254,39 +267,24 @@ const server = net.createServer((socket) => {
 
 //A function to Send data to the request 
 
-function onWritwData(socket,PDU)
+function onWritwData(socket)
 {
     let promise = new Promise((resolve, reject)=>{
 
-        let hasWritten = socket.write(PDU)
-        let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
-        if(hasWritten)
-        {
-            if(hasTerminated)
+        socket.on("data", waspInfo =>{
+
+            let bufferPDU = Buffer.from(waspInfo);
+            if(bufferPDU)
             {
+                console.log("Promise Init");
+                console.log(bufferPDU.toString());
+                resolve(bufferPDU.toString());
 
-                socket.on("data", waspInfo =>{
-
-                    let bufferPDU = Buffer.from(waspInfo);
-                    if(bufferPDU)
-                    {
-                        console.log("Promise Init");
-                        console.log(bufferPDU.toString());
-                        resolve(bufferPDU.toString());
-        
-                    }else{
-                        reject("Not found")
-                    }
-        
-                })
-
-
-
+            }else{
+                reject("Not found")
             }
 
-
-        }
-       
+        })
 
     })
 
