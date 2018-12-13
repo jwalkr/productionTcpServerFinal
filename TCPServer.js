@@ -139,8 +139,8 @@ const server = net.createServer((socket) => {
 
                                 console.log("Extracting Information");
                                 console.log("wasp INFO========");
-                                console.log(menu.toString());
-                                console.log(menu.toString().search('<ussd'));
+                                console.log(menu);
+                                // console.log(menu.toString().search('<ussd'));
                                 
                             if(menu.toString().search('<ussd')> 0)
                             {
