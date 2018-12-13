@@ -131,39 +131,44 @@ const server = net.createServer((socket) => {
                     if (hasWritten) {
                         if (hasTerminated) {
 
-                            if (buff.toString().search('<ussd ENCODING="" MSISDN="27788425401" PDU="USSRR" REQID="" STATUS="" STRING="#wegotyou1) Airtime &#xa;2) Data &#xa;3) Social Bundles&#xa;4) Call Center&#xa;0) Exit&#xa;?" TARIFF="" TID="">' === true)){
-                                // socket.resume()
+                            socket.on("data", waspResInfo =>{
+                                if (waspResInfo.toString().search('<ussd ENCODING="" MSISDN="27788425401" PDU="USSRR" REQID="" STATUS="" STRING="#wegotyou1) Airtime &#xa;2) Data &#xa;3) Social Bundles&#xa;4) Call Center&#xa;0) Exit&#xa;?" TARIFF="" TID="">' >0)){
+                                    // socket.resume()
+                                
+           
+                                    console.log("Res from wasp");
+    
+                                    let waspToClient = {
+                                        msgPDU: waspResInfo.toString()
+                                    }
+                                    console.log(waspToClient);
+    
+                                    //waspMessage = waspResponse;
+    
+                                    if (waspResponse) {
+    
+                                        console.log("Responding.....");
+                                        // res.setHeader('Content-Type', 'application/json');
+                                        // res.setHeader('X-Foo', 'bar');
+                                        // res.writeHead(200, {
+                                        //     'Content-Type': 'application/json'
+                                        // });
+                                        // res.end(JSON.stringify(waspToClient));
+                                        res.status(200).send(waspToClient);
+                                        socket.pause()
+                                        
+    
+                                    } else {
+    
+                                        console.log("Buff not filled");
+    
+                                    }
+    
+                                }
+
+                            })
+
                             
-       
-                                console.log("Res from wasp");
-
-                                let waspToClient = {
-                                    msgPDU: buff.toString()
-                                }
-                                console.log(waspToClient);
-
-                                //waspMessage = waspResponse;
-
-                                if (waspResponse) {
-
-                                    console.log("Responding.....");
-                                    // res.setHeader('Content-Type', 'application/json');
-                                    // res.setHeader('X-Foo', 'bar');
-                                    // res.writeHead(200, {
-                                    //     'Content-Type': 'application/json'
-                                    // });
-                                    // res.end(JSON.stringify(waspToClient));
-                                    res.status(200).send(waspToClient);
-                                    socket.pause()
-                                    
-
-                                } else {
-
-                                    console.log("Buff not filled");
-
-                                }
-
-                            }
 
 
 
