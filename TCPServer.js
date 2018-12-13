@@ -139,7 +139,7 @@ const server = net.createServer((socket) => {
 
                                 console.log("Extracting Information");
                                 console.log("wasp INFO========");
-                                console.log(menu.toString("utf8"));
+                                console.log(menu.menu);
                                 // console.log(menu.toString().search('<ussd'));
                                 
                             if(menu.toString().search('<ussd')> 0)
@@ -275,7 +275,7 @@ function onWritwData(socket)
 
             if(waspInfo)
             {
-                resolve({menu: waspInfo});
+                resolve({menu: waspInfo.toString()});
 
             }else{
                 reject({menu:"Not found"})
