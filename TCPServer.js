@@ -156,7 +156,7 @@ const server = net.createServer((socket) => {
                                     //     'Content-Type': 'application/json'
                                     // });
                                     // res.end(JSON.stringify(waspToClient));
-                                    res.status(200).send(waspInfo);
+                                    res.status(200).send(waspInfo.toString());
                                     //socket.pause()
                                     
 
