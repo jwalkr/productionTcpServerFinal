@@ -139,10 +139,10 @@ const server = net.createServer((socket) => {
 
                                 console.log("Extracting Information");
                                 console.log("wasp INFO========");
-                                console.log(menu.menu);
+                                console.log(menu);
                                 // console.log(menu.toString().search('<ussd'));
                                 
-                            if(menu.menu.toString().search('<ussd')> 0)
+                            if(menu.toString().search('<ussd')> 0)
                             {
 
 
@@ -276,12 +276,12 @@ function onWritwData(socket)
             let bufferPDU = Buffer.from(waspInfo);
             if(bufferPDU)
             {
-                console.log("Promose Init");
+                console.log("Promise Init");
                 console.log(bufferPDU.toString());
-                resolve({menu: bufferPDU.toString()});
+                resolve(bufferPDU.toString());
 
             }else{
-                reject({menu:"Not found"})
+                reject("Not found")
             }
 
         })
