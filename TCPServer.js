@@ -55,11 +55,9 @@ let iswriting = false
 
 let waspMessage = null;
 
-let toClientMessagePDU = null;
-
 const server = net.createServer((socket) => {
     //wasp authentication
-    socket.resume()
+    //socket.resume()
     socket.on('data', (waspResponse) => {
         // check if we receiving wasp credentials 
         console.log('Response:' + waspResponse)
@@ -126,35 +124,31 @@ const server = net.createServer((socket) => {
 
                    
 
-                    // let hasWritten = socket.write(req.body.msgPDU)
-                    // let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
+                    let hasWritten = socket.write(req.body.msgPDU)
+                    let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
                     //socket.pause()
 
-                  
+                    if (hasWritten) {
+                        if (hasTerminated) {
+                            
 
-                            onWritwData(socket,req.body.msgPDU)
-                            .then((menu) =>{
+                            socket.on("data", waspInfo =>{
 
-                               if(menu != null)
-                               {
-
-                                    console.log("Extracting Information");
-                                    console.log("wasp INFO========");
-                                    console.log(menu);
-                                    // console.log(menu.toString().search('<ussd'));
-                                    
-                                if(menu.toString().search('<ussd') > 0)
+                                console.log("wasp INFO========");
+                                console.log(waspInfo.toString());
+                                console.log(waspInfo.toString().search('<ussd'));
+                                if(waspInfo.toString().search('<ussd')> 0)
                                 {
 
 
                                 let waspToClient = {
-                                    msgPDU: menu.toString()
+                                    msgPDU: waspInfo.toString()
                                 }
                                 console.log(waspToClient);
 
                                 //waspMessage = waspResponse;
 
-                            
+                               
                                     console.log("Responding.....");
                                     // res.setHeader('Content-Type', 'application/json');
                                     // res.setHeader('X-Foo', 'bar');
@@ -173,21 +167,7 @@ const server = net.createServer((socket) => {
 
 
                                 }
-
-
-                               }else{
-
-                                console.log("Data not loaded yet...");
-
-                               }
-
-
-                            }).catch(error =>{
-
-                                console.log(error);
                             })
-
-                            
 
                             // if (buff.toString().search('<ussd ENCODING="" MSISDN="27788425401" PDU="USSRR" REQID="" STATUS="" STRING="#wegotyou1) Airtime &#xa;2) Data &#xa;3) Social Bundles&#xa;4) Call Center&#xa;0) Exit&#xa;?" TARIFF="" TID="">' === true)){
                             //     // socket.resume()
@@ -227,6 +207,15 @@ const server = net.createServer((socket) => {
 
 
 
+                        } else {
+
+                            console.log("Something Happened");
+                        }
+
+                    } else {
+                        console.log("Something Happened=======");
+                    }
+
                     done && done()
 
 
@@ -263,13 +252,9 @@ const server = net.createServer((socket) => {
 
 
 })
-
-//A function to Send data to the request 
-
-function onWritwData(socket,pdu)
+//Write data to the requester
+function onWritwData(socket)
 {
-    let hasWritten = socket.write(pdu)
- let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
     let promise = new Promise((resolve, reject)=>{
 
         socket.on("data", waspInfo =>{
@@ -277,10 +262,9 @@ function onWritwData(socket,pdu)
             let bufferPDU = Buffer.from(waspInfo);
             if(bufferPDU)
             {
-                console.log("Promise Init");
+                console.log("Promose Init");
                 console.log(bufferPDU.toString());
                 resolve(bufferPDU.toString());
-                socket.pause();
 
             }else{
                 reject("Not found")
