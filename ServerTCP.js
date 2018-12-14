@@ -57,44 +57,41 @@ let waspMessage = null;
 
 const server = net.createServer((socket) => {
     //wasp authentication
-    socket.resume()
+    //socket.resume()
     socket.on('data', (waspResponse) => {
-        socket.resume();
         // check if we receiving wasp credentials 
-        //console.log('Response:' + waspResponse)
+        console.log('Response:' + waspResponse)
         //stream data into the buffer 
-        buff = Buffer.from(waspResponse)
+        buff =  Buffer.from(waspResponse)
+        // check if there is data in the pipe
+        console.log('Response:' + buff.toString())
 
-        console.log(waspResponse.toString());
+        console.log(hasLoggedIn)
 
         if (!hasLoggedIn) {
+            if (waspResponse) {
 
-            //search for the login request in the buffer
-            if (iswriting === false) {
-                var debug_msg = buff.toString();
-                console.log(debug_msg);
-                console.log('entering logging in state')
-                
-                if (buff.toString().search(`<login COOKIE="ussdgw" NODE_ID="TEST_USER" PASSWORD="testp@55" RMT_SYS="uxml@localhost" USER="TEST_USER"/>`) > 0) {
+                //search for the login request in the buffer
+              
+                    console.log('entering logging in state')
+                    if (buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')) {
+                        console.log('currently busy writing the token' + token)
+                        hasLoggedIn = true;
+                        iswriting = true
 
-                    console.log("====================");
-                    console.log(buff.toString());
-                    console.log(buff.toString().search(`<login COOKIE="ussdgw" NODE_ID="TEST_USER" PASSWORD="testp@55" RMT_SYS="uxml@localhost" USER="TEST_USER"/>`));
-                    console.log('currently busy writing the token' + token)
-                    hasLoggedIn = true;
-                    iswriting = true
+                        socket.write(token)
+                        socket.write(Buffer.from('ff', 'hex'))
+                        
+                        console.log('finished writing , writing state back to ' + iswriting)
+                        console.log('socket created')
+                        // buff = Buffer.clear()
+                        // socket.pause()
 
-                    socket.write(token)
-                    socket.write(Buffer.from('ff', 'hex'))
-
-                    console.log('socket created')
-                    // socket.pause()
 
                 }
 
+
             }
-
-
 
 
         } else if (hasLoggedIn == true) {
@@ -123,19 +120,23 @@ const server = net.createServer((socket) => {
                     // socket.write(req.body.msgPDU)
                     // socket.write(Buffer.from('ff', 'hex'));
 
-
+                   
 
                     let hasWritten = socket.write(req.body.msgPDU)
                     let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
+                    //socket.pause()
 
                     if (hasWritten) {
                         if (hasTerminated) {
 
+                            socket.on("data", waspInfo =>{
 
-                            socket.on("data", waspInfo => {
+                                console.log("wasp INFO========");
+                                console.log(waspInfo.toString());
+                                console.log(waspInfo.toString().search('<ussd'));
+                                if(waspInfo.toString().search('<ussd')> 0)
+                                {
 
-
-                                console.log("Res from wasp");
 
                                 let waspToClient = {
                                     msgPDU: waspInfo.toString()
@@ -144,8 +145,7 @@ const server = net.createServer((socket) => {
 
                                 //waspMessage = waspResponse;
 
-                                if (waspInfo) {
-
+                               
                                     console.log("Responding.....");
                                     // res.setHeader('Content-Type', 'application/json');
                                     // res.setHeader('X-Foo', 'bar');
@@ -153,23 +153,52 @@ const server = net.createServer((socket) => {
                                     //     'Content-Type': 'application/json'
                                     // });
                                     // res.end(JSON.stringify(waspToClient));
-                                    //res.status(200).send(waspToClient);
+                                    res.status(200).send(waspToClient);
                                     //socket.pause()
-
+                                    
 
                                 } else {
 
                                     console.log("Buff not filled");
 
+
+
                                 }
-
-
-
                             })
 
+                            // if (buff.toString().search('<ussd ENCODING="" MSISDN="27788425401" PDU="USSRR" REQID="" STATUS="" STRING="#wegotyou1) Airtime &#xa;2) Data &#xa;3) Social Bundles&#xa;4) Call Center&#xa;0) Exit&#xa;?" TARIFF="" TID="">' === true)){
+                            //     // socket.resume()
+                            
+       
+                            //     console.log("Res from wasp");
 
+                            //     let waspToClient = {
+                            //         msgPDU: waspResponse.toString()
+                            //     }
+                            //     console.log(waspToClient);
 
+                            //     //waspMessage = waspResponse;
 
+                            //     if (waspResponse) {
+
+                            //         console.log("Responding.....");
+                            //         // res.setHeader('Content-Type', 'application/json');
+                            //         // res.setHeader('X-Foo', 'bar');
+                            //         // res.writeHead(200, {
+                            //         //     'Content-Type': 'application/json'
+                            //         // });
+                            //         // res.end(JSON.stringify(waspToClient));
+                            //         res.status(200).send(waspToClient);
+                            //         //socket.pause()
+                                    
+
+                            //     } else {
+
+                            //         console.log("Buff not filled");
+
+                            //     }
+
+                            // }
 
 
 
@@ -220,6 +249,32 @@ const server = net.createServer((socket) => {
 
 
 })
+//Write data to the requester
+function onWritwData(socket)
+{
+    let promise = new Promise((resolve, reject)=>{
+
+        socket.on("data", waspInfo =>{
+
+            let bufferPDU = Buffer.from(waspInfo);
+            if(bufferPDU)
+            {
+                console.log("Promose Init");
+                console.log(bufferPDU.toString());
+                resolve(bufferPDU.toString());
+
+            }else{
+                reject("Not found")
+            }
+
+        })
+
+    })
+
+    return promise;
+
+
+}
 
 //A function to write to the wasp
 function onWriteToWasp(socket) {
