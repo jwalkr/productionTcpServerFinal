@@ -74,7 +74,7 @@ const server = net.createServer((socket) => {
                 //search for the login request in the buffer
                 if (iswriting === false) {
                     console.log('entering logging in state')
-                    if (buff.toString().search('<login COOKIE="ussdgw" NODE_ID="MTNMENU_F02" PASSWORD="mtnm3nu123" RMT_SYS="uxml@ussdgw" USER="MTNMENUF02"/>')) {
+                    if (buff.toString().search('<login COOKIE="ussdgw" NODE_ID="TEST_USER" PASSWORD="testp@55" RMT_SYS="uxml@localhost" USER="TEST_USER"/>')>0) {
                         console.log('currently busy writing the token' + token)
                         hasLoggedIn = true;
                         iswriting = true
@@ -126,7 +126,7 @@ const server = net.createServer((socket) => {
 
                     let hasWritten = socket.write(req.body.msgPDU)
                     let hasTerminated = socket.write(Buffer.from('ff', 'hex'))
-                    //socket.pause()
+                    // socket.pause()
 
                     if (hasWritten) {
                         if (hasTerminated) {
@@ -156,8 +156,9 @@ const server = net.createServer((socket) => {
                                     //     'Content-Type': 'application/json'
                                     // });
                                     // res.end(JSON.stringify(waspToClient));
+                                    socket.pause()
                                     res.status(200).send(waspToClient);
-                                    //socket.pause()
+                                    
                                     
 
                                 } else {
@@ -220,7 +221,7 @@ const server = net.createServer((socket) => {
 
 
                     socket.on('error', (error) => {
-                        hasLoggedIn = false;
+                        hasLoggedIn = false; 
                         console.log('Handled error')
                         console.log(error)
                         userRequestJob.on('failed', (errorMessage) => {
