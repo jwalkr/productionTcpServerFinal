@@ -72,7 +72,7 @@ const server = net.createServer((socket) => {
             if (waspResponse) {
 
                 //search for the login request in the buffer
-                if (iswriting === false) {
+              
                     console.log('entering logging in state')
                     if (buff.toString().search('<login COOKIE="ussdgw" NODE_ID="TEST_USER" PASSWORD="testp@55" RMT_SYS="uxml@localhost" USER="TEST_USER"/>')>0) {
                         console.log('currently busy writing the token' + token)
@@ -82,13 +82,11 @@ const server = net.createServer((socket) => {
                         socket.write(token)
                         socket.write(Buffer.from('ff', 'hex'))
                         
-                        iswriting = false
                         console.log('finished writing , writing state back to ' + iswriting)
                         console.log('socket created')
                         // buff = Buffer.clear()
                         // socket.pause()
 
-                    }
 
                 }
 
@@ -130,7 +128,6 @@ const server = net.createServer((socket) => {
 
                     if (hasWritten) {
                         if (hasTerminated) {
-                            
 
                             socket.on("data", waspInfo =>{
 
