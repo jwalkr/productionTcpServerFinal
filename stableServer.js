@@ -44,31 +44,31 @@ let waspMessage = null
 const server = net.createServer((socket) => {
 
     
-        socket.on('data' , (waspResponse) => {
-            //check if we receiving wasp credentials 
-            console.log('Response:' + waspResponse)
-            //stream data into the buffer
-            buff = Buffer.from(waspResponse)
-            //check if there is data in the pipe 
-            console.log('Response:' + buff.toString())
-    
-    
-            console.log(hasLoggedIn)
-    
-            
-                if(waspResponse){
-                    //search for the login request in the buffer 
-                    console.log('entering loggin in state ')
-                    if (buff.toString().search('<login COOKIE="ussdgw" NODE_ID="TEST_USER" PASSWORD="testp@55" RMT_SYS="uxml@localhost" USER="TEST_USER"/>')>0){
-                        console.log('currently busy writing the token' + token)
-                        hasLoggedIn = true
-                        isWriting = true
-                        socket.write(token)
-                        socket.write(Buffer.from('ff' , 'hex'))
-                        socket.pause()
-                    }
+    socket.on('data' , (waspResponse) => {
+        //check if we receiving wasp credentials 
+        console.log('Response:' + waspResponse)
+        //stream data into the buffer
+        buff = Buffer.from(waspResponse)
+        //check if there is data in the pipe 
+        console.log('Response:' + buff.toString())
+
+
+        console.log(hasLoggedIn)
+
+        
+            if(waspResponse){
+                //search for the login request in the buffer 
+                console.log('entering loggin in state ')
+                if (buff.toString().search('<login COOKIE="ussdgw" NODE_ID="TEST_USER" PASSWORD="testp@55" RMT_SYS="uxml@localhost" USER="TEST_USER"/>')>0){
+                    console.log('currently busy writing the token' + token)
+                    hasLoggedIn = true
+                    isWriting = true
+                    socket.write(token)
+                    socket.write(Buffer.from('ff' , 'hex'))
+                    socket.pause()
                 }
-        })
+            }
+    })
             
     
      
