@@ -43,7 +43,7 @@ let waspMessage = null
 
 const server = net.createServer((socket) => {
 
-    if(!hasLoggedIn){
+    
         socket.on('data' , (waspResponse) => {
             //check if we receiving wasp credentials 
             console.log('Response:' + waspResponse)
@@ -68,11 +68,12 @@ const server = net.createServer((socket) => {
                         socket.pause()
                     }
                 }
+        })
             
     
-        })
+     
 
-    } else if(hasLoggedIn ===true){
+    if(hasLoggedIn ===true){
         socket.resume()
         app.post('/api/v1/newWaspRequest' , (req , res) => {
             console.log('user request has been created')
