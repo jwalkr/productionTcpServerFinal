@@ -29,8 +29,8 @@ let buffResponsd = null
 //translate 
 const js2xmlparser = require('js2xmlparser')
 
-const host = proccess.env.HOST || '127.0.0.1'
-const port = proccess.env.PORT || 8000
+const host =  '127.0.0.1'
+const port = 8000
 
 let dataRespond ;
 let userRequestJob = null 
