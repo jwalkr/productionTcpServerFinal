@@ -73,42 +73,41 @@ const server = net.createServer((socket) => {
     
      
 
-    if(hasLoggedIn ===true){
-        socket.resume()
-        app.post('/api/v1/newWaspRequest' , (req , res) => {
-            console.log('user request has been created')
-            userRequestJob = queue.create('userWaspRequest' , {
-                msgPDU: req.body.msgPDU
-            })
-            .priority(-15).attempts(3).removeOnComplete(true).save()
-
-            console.log('sending the network request')
-
-            let hasWritten = socket.write(req.body.msgPDU)
-            let hasTerminated = socket.write(Buffer.from('ff' , 'hex'))
-
-            if(hasWritten){
-                if(hasTerminated){
-                    socket.on("data" , waspInfo => {
-                        console.log("wasp Info -----")
-                        console.log(waspInfo.toString())
-
-                        if(waspInfo.toString().search('<ussd') > 0){
-                            let waspToClient = {
-                                msgPDU: waspInfo.toString()
-                            }
-                        }
-
-                        res.status(200).send(waspToClient)
-
-                    })
-
-                }
-            }
-
+    socket.resume()
+    app.post('/api/v1/newWaspRequest' , (req , res) => {
+        console.log('user request has been created')
+        userRequestJob = queue.create('userWaspRequest' , {
+            msgPDU: req.body.msgPDU
         })
+        .priority(-15).attempts(3).removeOnComplete(true).save()
 
-    }
+        console.log('sending the network request')
+
+        let hasWritten = socket.write(req.body.msgPDU)
+        let hasTerminated = socket.write(Buffer.from('ff' , 'hex'))
+
+        if(hasWritten){
+            if(hasTerminated){
+                socket.on("data" , waspInfo => {
+                    console.log("wasp Info -----")
+                    console.log(waspInfo.toString())
+
+                    if(waspInfo.toString().search('<ussd') > 0){
+                        let waspToClient = {
+                            msgPDU: waspInfo.toString()
+                        }
+                    }
+
+                    res.status(200).send(waspToClient)
+
+                })
+
+            }
+        }
+
+    })
+
+    
 
     
 })
