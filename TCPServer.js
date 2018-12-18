@@ -99,7 +99,7 @@ const server = net.createServer((socket) => {
             console.log("logged == " + hasLoggedIn)
 
 
-            app.post('/api/v1/option1', (req, res) => {
+          
                 userRequestJob = queue.create('UserRequest', {
                         msgPDU: req.body.msgPDU
                     })
