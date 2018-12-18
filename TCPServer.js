@@ -114,6 +114,7 @@ app.post('/api/v1/option1', (req, res) => {
             })
 
         } else {
+            
 
             console.log("255 Character not terminated");
         }
