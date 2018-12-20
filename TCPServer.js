@@ -103,7 +103,7 @@ app.post('/api/v1/option1', (req, res) => {
 
     console.log('Sending the network request');
     // proccession jobs
-    queue.process('userWaspRequest' , 100 , (job , done) =>{
+    queue.process('userWaspRequest' , 10 , (job , done) =>{
 
          //Write PDU to the WASP
         let hasWritten = socketEndp.write(req.body.msgPDU);
