@@ -19,10 +19,10 @@ kueUiExpress(app, '/kue/', '/kue-api')
 let queue = kue.createQueue()
 
 //mount kue json api
-//app.use('/kue-api/', kue.app)
-// app.listen(PORT, () => {
-//     console.log(`server running on port ${PORT}`)
-// });
+app.use('/kue-api/', kue.app)
+app.listen(PORT, () => {
+    console.log(`server running on port ${PORT}`)
+});
 
 
 
