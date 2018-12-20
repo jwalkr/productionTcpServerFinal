@@ -92,35 +92,46 @@ const server = net.createServer((socket) => {
 
 app.post('/api/v1/option1', (req, res) => {
 
+    userWaspRequest = queue.create('userWaspRequest' , {
+        msgPDU: req.body.msgPDU
+    })
+    .priority(-15).attempts(3).removeOnComplete(true).save()
+
     console.log('translator body');
     console.log(req.body.msgPDU);
     //socket.resume()
 
     console.log('Sending the network request');
+    // proccession jobs
+    queue.process('userWaspRequest' , 100 , (job , done) =>{
 
-    //Write PDU to the WASP
-    let hasWritten = socketEndp.write(req.body.msgPDU);
-    let hasTerminated = socketEndp.write(Buffer.from('ff', 'hex'));
+         //Write PDU to the WASP
+        let hasWritten = socketEndp.write(req.body.msgPDU);
+        let hasTerminated = socketEndp.write(Buffer.from('ff', 'hex'));
 
-    if (hasWritten) {
-        if (hasTerminated) {
+        if (hasWritten) {
+            if (hasTerminated) {
 
-            onExecutePDU(socketEndp, ).then(dataRes => {
-                console.log("Promise Correct");
-                console.log(dataRes);
-                res.status(200).send(dataRes);
-            }).catch(err => {
-                console.log("Promise result gone wrong wrong");
-            })
+                onExecutePDU(socketEndp, ).then(dataRes => {
+                    console.log("Promise Correct");
+                    console.log(dataRes);
+                    res.status(200).send(dataRes);
+                    done && done()
+                }).catch(err => {
+                    console.log("Promise result gone wrong wrong");
+                })
+
+            } else {
+                
+                console.log("255 Character not terminated");
+            }
 
         } else {
-            
-            console.log("255 Character not terminated");
+            console.log("PDU Not Written");
         }
 
-    } else {
-        console.log("PDU Not Written");
-    }
+    })
+   
 
 
     socketEndp.on('error', (error) => {
