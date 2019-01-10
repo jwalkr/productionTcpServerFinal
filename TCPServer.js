@@ -92,10 +92,10 @@ const server = net.createServer((socket) => {
 
 app.post('/api/v1/option1', (req, res) => {
 
-    // userWaspRequest = queue.create('userWaspRequest' , {
-    //     msgPDU: req.body.msgPDU
-    // })
-    // .priority(-15).attempts(3).removeOnComplete(true).save()
+    userWaspRequest = queue.create('userWaspRequest' , {
+        msgPDU: req.body.msgPDU
+    })
+    .priority(-15).attempts(3).removeOnComplete(true).save()
 
     console.log('translator body');
     console.log(req.body.msgPDU);
@@ -103,7 +103,7 @@ app.post('/api/v1/option1', (req, res) => {
 
     console.log('Sending the network request');
     // proccession jobs
-    // queue.process('userWaspRequest' , 10 , (job , done) =>{
+    queue.process('userWaspRequest' , 10 , (job , done) =>{
 
          //Write PDU to the WASP
         let hasWritten = socketEndp.write(req.body.msgPDU);
@@ -130,7 +130,7 @@ app.post('/api/v1/option1', (req, res) => {
             console.log("PDU Not Written");
         }
 
-    // })
+    })
    
 
 
